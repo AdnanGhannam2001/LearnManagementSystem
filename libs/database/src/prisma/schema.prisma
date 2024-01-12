@@ -6,3 +6,420 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id String @id @default(cuid())
+  name String
+  email String
+  bio String
+  password String
+  image String
+  permission Permissions @default(NormalUser)
+  isActivated Boolean @default(false)
+  joinedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creatorOf Course[]
+
+  settings Settings?
+
+  applyRequest ApplyRequest?
+
+  cart Cart?
+
+  notifications Notification[]
+
+  rolledCourses Rolled[]
+
+  coaching Coach[]
+
+  questions Question[]
+
+  comments Comment[]
+
+  memberIn Member[]
+
+  done Done[]
+
+  ratting Rate[]
+
+  announcements Announcement[]
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Settings {
+  notifications Boolean @default(true)
+  emails Boolean @default(true)
+  showCourses Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @id
+}
+
+model ApplyRequest {
+  user User @relation(fields: [userId], references: [id])
+  userId String @id
+  details String
+  sentAt DateTime @default(now())
+  status ApplyRequestStatus @default(Pending)
+  response String?
+}
+
+model Course {
+  id String @id @default(cuid())
+  title String
+  brief String
+  about String[]
+  video String
+  image String
+  requirements String[]
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator User @relation(fields: [creatorId], references: [id])
+  creatorId String
+
+  forum Forum?
+
+  students Rolled[]
+
+  categories Category[]
+
+  languages Language[]
+
+  coaches Coach[]
+
+  folders Folder[]
+
+  saved Cart[]
+
+  chat Chat?
+
+  ratting Rate[]
+
+  announcements Announcement[]
+}
+
+model Language {
+  id String @id @default(cuid())
+  name String
+
+  courses Course[]
+}
+
+model Category {
+  id String @id @default(cuid())
+  label String
+
+  courses Course[]
+}
+
+model Unit {
+  id String @id @default(cuid())
+  title String
+  about String
+  order Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lesson {
+  id String @id @default(cuid())
+  title String
+  about String
+  order Int
+  type LessonTypes
+  content String? // if type === Txt
+  video String? // if type === Vid
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  questions QuizQuestion[] // If type === Quiz
+
+  comments Comment[]
+
+  done Done[]
+
+  resources Resource[]
+}
+
+model Coach {
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  startedAt DateTime @default(now())
+
+  @@id([userId, courseId])
+}
+
+model Folder {
+  id String @id @default(cuid())
+  name String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  files File[]
+}
+
+model File {
+  id String @id @default(cuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  folder Folder @relation(fields: [folderId], references: [id])
+  folderId String
+
+  usedFor Resource[]
+}
+
+model QuizQuestion {
+  id String @id @default(cuid())
+  text String
+  order Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  quiz Lesson @relation(fields: [quizId], references: [id])
+  quizId String
+
+  choices Choice[]
+}
+
+model Choice {
+  id String @id @default(cuid())
+  text String
+  isCorrect Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  question QuizQuestion @relation(fields: [questionId], references: [id])
+  questionId String
+}
+
+model Comment {
+  id String @id @default(cuid())
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  lesson Lesson? @relation(fields: [lessonId], references: [id])
+  lessonId String
+
+  question Question? @relation(fields: [questionId], references: [id])
+  questionId String
+
+  votes Vote[]
+}
+
+model Vote {
+  id String @id @default(cuid())
+  type VoteTypes
+
+  votedAt DateTime @default(now())
+
+  question Question? @relation(fields: [questionId], references: [id])
+  questionId String
+
+  comment Comment? @relation(fields: [commentId], references: [id])
+  commentId String
+}
+
+model Chat {
+  isOpen Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String @id
+  
+  members Member[]
+
+  messages Message[]
+}
+
+model Message {
+  id String @id @default(cuid())
+  content String
+
+  sentAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chat Chat @relation(fields: [chatId], references: [courseId])
+  chatId String
+}
+
+model Resource {
+  file File @relation(fields: [fileId], references: [id])
+  fileId String
+
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+  lessonId String
+
+  addedAt DateTime @default(now())
+
+  @@id([fileId, lessonId])
+}
+
+model Cart {
+  user User @relation(fields: [userId], references: [id])
+  userId String @id
+
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+}
+
+model Rolled {
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  rolledAt DateTime @default(now())
+
+  payment Payment?
+
+  @@id([userId, courseId])
+}
+
+model Payment {
+  rolled Rolled @relation(fields: [userId, courseId], references: [userId, courseId])
+  userId String
+  courseId String
+
+  paidAt DateTime @default(now())
+
+  @@id([userId, courseId])
+}
+
+model Member {
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  chat Chat @relation(fields: [chatId], references: [courseId])
+  chatId String
+
+  joinedAt DateTime @default(now())
+
+  @@id([userId, chatId])
+}
+
+model Done {
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+  lessonId String
+
+  doneAt DateTime @default(now())
+
+  @@id([userId, lessonId])
+}
+
+model Rate {
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  ratedAt DateTime @default(now())
+
+  @@id([userId, courseId])
+}
+
+model Forum {
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String @id
+
+  questions Question[]
+}
+
+model Question {
+  id String @id @default(cuid())
+  title String
+  content String
+
+  askedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  forum Forum @relation(fields: [forumId], references: [courseId])
+  forumId String
+
+  comments Comment[]
+
+  votes Vote[]
+}
+
+model Announcement {
+  id String @id @default(cuid())
+  content String
+
+  announcedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
+
+  course Course @relation(fields: [courseId], references: [id])
+  courseId String
+}
+
+// Enums
+enum Permissions {
+  NormalUser
+  Coach
+  Admin
+  Root
+}
+
+enum VoteTypes {
+  Up
+  Down
+}
+
+enum Tiers {
+  One
+  Two
+  Three
+}
+
+enum LessonTypes {
+  Vid
+  Txt
+  Quiz
+}
+
+enum ApplyRequestStatus {
+  Pending
+  Accepted
+  Rejected
+}
