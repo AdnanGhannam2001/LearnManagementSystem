@@ -18,11 +18,29 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@database": [
+        "libs/database/src"
+      ],
+      "@database/*": [
+        "libs/database/src/*"
+      ],
+      "@protobuf": [
+        "libs/protobuf/src"
+      ],
+      "@protobuf/*": [
+        "libs/protobuf/src/*"
+      ],
       "@libs/database": [
         "libs/database/src"
       ],
       "@libs/database/*": [
         "libs/database/src/*"
+      ],
+      "@libs/protobuf": [
+        "libs/protobuf/src"
+      ],
+      "@libs/protobuf/*": [
+        "libs/protobuf/src/*"
       ]
     }
   }

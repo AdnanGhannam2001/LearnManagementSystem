@@ -15,6 +15,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/database/tsconfig.lib.json"
       }
+    },
+    "protobuf": {
+      "type": "library",
+      "root": "libs/protobuf",
+      "entryFile": "index",
+      "sourceRoot": "libs/protobuf/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/protobuf/tsconfig.lib.json"
+      }
     }
   }
 }
