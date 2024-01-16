@@ -9,12 +9,13 @@ datasource db {
 
 model User {
   id String @id @default(cuid())
-  name String
+  name String @db.VarChar(40)
   email String
-  bio String
+  bio String @db.VarChar(1000)
   password String
   image String
   permission Permissions @default(NormalUser)
+  activateCode String?
   isActivated Boolean @default(false)
   joinedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,7 +52,7 @@ model User {
 model Notification {
   id String @id @default(cuid())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }
 
@@ -60,29 +61,29 @@ model Settings {
   emails Boolean @default(true)
   showCourses Boolean @default(true)
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @id
 }
 
 model ApplyRequest {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @id
 
-  details String
+  details String @db.VarChar(500)
   sentAt DateTime @default(now())
   status ApplyRequestStatus @default(Pending)
-  response String?
+  response String? @db.VarChar(500)
 }
 
 model Course {
   id String @id @default(cuid())
-  title String
-  brief String
+  title String @db.VarChar(100)
+  brief String @db.VarChar(250)
   about String[]
   video String
   image String
   requirements String[]
-  description String
+  description String @db.VarChar(1000)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -112,22 +113,22 @@ model Course {
 
 model Language {
   id String @id @default(cuid())
-  name String
+  name String @db.VarChar(50)
 
   courses Course[]
 }
 
 model Category {
   id String @id @default(cuid())
-  label String
+  label String @db.VarChar(50)
 
   courses Course[]
 }
 
 model Unit {
   id String @id @default(cuid())
-  title String
-  about String
+  title String @db.VarChar(100)
+  about String @db.VarChar(250)
   order Int
 
   createdAt DateTime @default(now())
@@ -136,8 +137,8 @@ model Unit {
 
 model Lesson {
   id String @id @default(cuid())
-  title String
-  about String
+  title String @db.VarChar(100)
+  about String @db.VarChar(250)
   order Int
   type LessonTypes
   content String? // if type === Txt
@@ -156,10 +157,10 @@ model Lesson {
 }
 
 model Coach {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   startedAt DateTime @default(now())
@@ -169,12 +170,12 @@ model Coach {
 
 model Folder {
   id String @id @default(cuid())
-  name String
+  name String @db.VarChar(30)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   files File[]
@@ -182,12 +183,12 @@ model Folder {
 
 model File {
   id String @id @default(cuid())
-  name String
+  name String @db.VarChar(30)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  folder Folder @relation(fields: [folderId], references: [id])
+  folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
   folderId String
 
   usedFor Resource[]
@@ -195,13 +196,13 @@ model File {
 
 model QuizQuestion {
   id String @id @default(cuid())
-  text String
+  text String @db.VarChar(1000)
   order Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  quiz Lesson @relation(fields: [quizId], references: [id])
+  quiz Lesson @relation(fields: [quizId], references: [id], onDelete: Cascade)
   quizId String
 
   choices Choice[]
@@ -209,30 +210,30 @@ model QuizQuestion {
 
 model Choice {
   id String @id @default(cuid())
-  text String
+  text String @db.VarChar(1000)
   isCorrect Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  question QuizQuestion @relation(fields: [questionId], references: [id])
+  question QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
 }
 
 model Comment {
   id String @id @default(cuid())
-  content String
+  content String @db.VarChar(1000)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  lesson Lesson? @relation(fields: [lessonId], references: [id])
+  lesson Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   lessonId String
 
-  question Question? @relation(fields: [questionId], references: [id])
+  question Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
 
   votes Vote[]
@@ -244,10 +245,10 @@ model Vote {
 
   votedAt DateTime @default(now())
 
-  question Question? @relation(fields: [questionId], references: [id])
+  question Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
 
-  comment Comment? @relation(fields: [commentId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   commentId String
 }
 
@@ -256,7 +257,7 @@ model Chat {
 
   createdAt DateTime @default(now())
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String @id
   
   members Member[]
@@ -266,12 +267,12 @@ model Chat {
 
 model Message {
   id String @id @default(cuid())
-  content String
+  content String @db.VarChar(1000)
 
   sentAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  chat Chat @relation(fields: [chatId], references: [courseId])
+  chat Chat @relation(fields: [chatId], references: [courseId], onDelete: Cascade)
   chatId String
 
   sender User @relation(fields: [senderId], references: [id])
@@ -279,10 +280,10 @@ model Message {
 }
 
 model Resource {
-  file File @relation(fields: [fileId], references: [id])
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
   fileId String
 
-  lesson Lesson @relation(fields: [lessonId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   lessonId String
 
   addedAt DateTime @default(now())
@@ -291,7 +292,7 @@ model Resource {
 }
 
 model Cart {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @id
 
   updatedAt DateTime @updatedAt
@@ -324,10 +325,10 @@ model Payment {
 }
 
 model Member {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  chat Chat @relation(fields: [chatId], references: [courseId])
+  chat Chat @relation(fields: [chatId], references: [courseId], onDelete: Cascade)
   chatId String
 
   joinedAt DateTime @default(now())
@@ -336,10 +337,10 @@ model Member {
 }
 
 model Done {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  lesson Lesson @relation(fields: [lessonId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   lessonId String
 
   doneAt DateTime @default(now())
@@ -348,10 +349,10 @@ model Done {
 }
 
 model Rate {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   ratedAt DateTime @default(now())
@@ -360,7 +361,7 @@ model Rate {
 }
 
 model Forum {
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String @id
 
   questions Question[]
@@ -368,8 +369,8 @@ model Forum {
 
 model Question {
   id String @id @default(cuid())
-  title String
-  content String
+  title String @db.VarChar(100)
+  content String @db.VarChar(2000)
 
   askedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -377,7 +378,7 @@ model Question {
   user User @relation(fields: [userId], references: [id])
   userId String
 
-  forum Forum @relation(fields: [forumId], references: [courseId])
+  forum Forum @relation(fields: [forumId], references: [courseId], onDelete: Cascade)
   forumId String
 
   comments Comment[]
@@ -387,7 +388,7 @@ model Question {
 
 model Announcement {
   id String @id @default(cuid())
-  content String
+  content String @db.VarChar(2000)
 
   announcedAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -395,7 +396,7 @@ model Announcement {
   user User @relation(fields: [userId], references: [id])
   userId String
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 }
 
@@ -403,6 +404,7 @@ model Announcement {
 enum Permissions {
   NormalUser
   Coach
+  Moderator
   Admin
   Root
 }
