@@ -13,7 +13,7 @@ model User {
   email String
   bio String @db.VarChar(1000)
   password String
-  image String
+  image String?
   permission Permissions @default(NormalUser)
   activateCode String?
   isActivated Boolean @default(false)
@@ -78,7 +78,7 @@ model ApplyRequest {
 model Course {
   id String @id @default(cuid())
   title String @db.VarChar(100)
-  brief String @db.VarChar(250)
+  brief String? @db.VarChar(250)
   about String[]
   video String
   image String
