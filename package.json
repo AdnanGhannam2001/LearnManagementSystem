@@ -7,11 +7,11 @@
   "license": "MIT License",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/apps/learnio/main",
     "prisma:migrate": "yarn prisma migrate dev --schema=./libs/database/prisma/schema.prisma",
     "prisma:generate": "yarn prisma generate --schema=./libs/database/prisma/schema.prisma",
     "prisma:studio": "yarn prisma studio --schema=./libs/database/prisma/schema.prisma",
@@ -21,7 +21,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/learnio/test/jest-e2e.json"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.9.13",
@@ -77,8 +77,8 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/src/",
-      "<rootDir>/libs/"
+      "<rootDir>/libs/",
+      "<rootDir>/apps/"
     ],
     "moduleNameMapper": {
       "^@libs/database(|/.*)$": "<rootDir>/libs/database/src/$1",

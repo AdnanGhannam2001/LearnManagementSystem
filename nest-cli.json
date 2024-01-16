@@ -1,10 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/learnio/src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true
+    "webpack": true,
+    "tsConfigPath": "apps/learnio/tsconfig.app.json"
   },
   "projects": {
     "database": {
@@ -24,6 +25,26 @@
       "compilerOptions": {
         "tsConfigPath": "libs/protobuf/tsconfig.lib.json"
       }
+    },
+    "learnio": {
+      "type": "application",
+      "root": "apps/learnio",
+      "entryFile": "main",
+      "sourceRoot": "apps/learnio/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/learnio/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "application",
+      "root": "apps/auth",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
+      }
     }
-  }
+  },
+  "monorepo": true,
+  "root": "apps/learnio"
 }
