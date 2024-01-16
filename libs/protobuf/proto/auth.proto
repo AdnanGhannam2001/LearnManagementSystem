@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package learnio.auth;
+
+import "_shared.proto";
+
+service AuthService {
+    rpc Register(RegisterRequest) returns (RegisterResponse);
+
+    rpc VerifyEmail(VerifyEmailRequest) returns (VerifyEmailResponse);
+
+    rpc Login(LoginRequest) returns (LoginResponse);
+
+    rpc Authenticate(AuthenticateRequest) returns (AuthResponse);
+
+    rpc RoleAuthorize(RoleAuthorizeRequest) returns (AuthResponse);
+
+    rpc ClaimsAuthorize(ClaimsAuthorizeRequest) returns (AuthResponse);
+}
+
+enum Action {
+    CREATE = 0;
+    READ = 1;
+    UPDATE = 2;
+    DELETE = 3;
+}
+
+enum ObjectType {
+    USER = 0;
+    NOTIFICATION = 1;
+    SETTINGS = 2;
+    APPLY_REQUEST = 3;
+    COURSE = 4;
+    UNIT = 5;
+    LESSON = 6;
+    FOLDER = 7;
+    FILE = 8;
+    QUIZ_QUESTION = 9;
+    CHOISE = 10;
+    COMMENT = 11;
+    VOTE = 12;
+    CHAT = 13;
+    MESSAGE = 14;
+    RESOURCE = 15;
+    CART = 16;
+    ROLLED = 17;
+    PAYMENT = 18;
+    MEMBER = 19;
+    DONE = 20;
+    RATE = 21;
+    QUESTION = 22;
+    ANNOUNCEMENT = 23;
+}
+
+enum Role {
+    NORMAL_USER = 0;
+    COACH = 1;
+    MODERATOR = 2;
+    ADMIN = 3;
+    ROOT = 4;
+}
+
+message RegisterRequest {
+    string name = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message RegisterResponse {
+    oneof data {
+        string email = 1;
+        Error error = 2;
+    }
+}
+
+message VerifyEmailRequest {
+    string email = 1;
+    string code = 2;
+}
+
+message VerifyEmailResponse {
+    optional Error error = 1;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    oneof data {
+        string token = 1;
+        Error error = 2;
+    }
+}
+
+message AuthenticateRequest {
+    string id = 1;
+}
+
+message RoleAuthorizeRequest {
+    string id = 1;
+    Role required_role = 2;
+}
+
+message ClaimsAuthorizeRequest {
+    string id = 1;
+    string object_id = 2;
+    ObjectType object_type = 3;
+    Action action = 4;
+}
+
+message AuthResponse {
+    oneof data {
+        bool allowed = 1;
+        Error error = 2;
+    }
+}
