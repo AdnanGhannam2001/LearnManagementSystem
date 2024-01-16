@@ -128,7 +128,7 @@ model Category {
 model Unit {
   id String @id @default(cuid())
   title String @db.VarChar(100)
-  about String @db.VarChar(250)
+  about String? @db.VarChar(250)
   order Int
 
   createdAt DateTime @default(now())
@@ -138,7 +138,7 @@ model Unit {
 model Lesson {
   id String @id @default(cuid())
   title String @db.VarChar(100)
-  about String @db.VarChar(250)
+  about String? @db.VarChar(250)
   order Int
   type LessonTypes
   content String? // if type === Txt
