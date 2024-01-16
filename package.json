@@ -15,6 +15,7 @@
     "prisma:migrate": "yarn prisma migrate dev --schema=./libs/database/prisma/schema.prisma",
     "prisma:generate": "yarn prisma generate --schema=./libs/database/prisma/schema.prisma",
     "prisma:studio": "yarn prisma studio --schema=./libs/database/prisma/schema.prisma",
+    "prisma:seed": "./build/prisma-seed.sh",
     "proto:generate": "./build/generate-proto.sh",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -37,6 +38,7 @@
     "ts-proto": "^1.166.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
