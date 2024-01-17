@@ -13,6 +13,6 @@ export class UsersService implements OnModuleInit {
     }
 
     login() {
-        return this.authService.login({email:"", password:""});
+        
     }
 }

@@ -1,6 +1,6 @@
 import { DatabaseService } from '@database';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
+import { Injectable } from '@nestjs/common';
+import { AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -15,13 +15,27 @@ export class AuthService {
 
   verifyEmail(request: VerifyEmailRequest) { return {}; }
 
-  async login(request: LoginRequest) {
-    const user = await this.usersService.findOneOrThrow({
+  async login(request: LoginRequest): Promise<LoginResponse> {
+    const user = await this.usersService.findOne({
       where: { email: request.email }
     });
 
+    if (!user) {
+      return {
+        error: {
+          code: 404,
+          message: "User is not found",
+        }
+      }
+    }
+
     if (!this.compare(request.password, user.password)) {
-      throw new BadRequestException('Password is wrong');
+      return {
+        error: {
+          code: 400,
+          message: "Password is wrong",
+        }
+      }
     }
 
     const token = await this.generateToken({ id: user.id });

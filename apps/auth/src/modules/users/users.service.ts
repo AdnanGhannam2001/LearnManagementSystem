@@ -1,6 +1,8 @@
 import { DatabaseService } from "@database";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { RpcException } from "@nestjs/microservices";
 import { Prisma } from "@prisma/client";
+import { status as grpcStatus } from '@grpc/grpc-js';
 
 @Injectable()
 export class UsersService {
@@ -26,7 +28,10 @@ export class UsersService {
         const user = await this.db.user.findUnique(args);
         
         if (!user) {
-            throw new NotFoundException(`User not found`);
+            throw new RpcException({
+                code: grpcStatus.NOT_FOUND,
+                message: "User not found"
+            });
         }
 
         return user;
