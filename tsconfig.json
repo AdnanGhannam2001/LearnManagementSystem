@@ -30,6 +30,12 @@
       "@protobuf/*": [
         "libs/protobuf/src/*"
       ],
+      "@common": [
+        "libs/common/src"
+      ],
+      "@common/*": [
+        "libs/common/src/*"
+      ],
       "@libs/database": [
         "libs/database/src"
       ],
@@ -41,6 +47,12 @@
       ],
       "@libs/protobuf/*": [
         "libs/protobuf/src/*"
+      ],
+      "@libs/common": [
+        "libs/common/src"
+      ],
+      "@libs/common/*": [
+        "libs/common/src/*"
       ]
     }
   }
