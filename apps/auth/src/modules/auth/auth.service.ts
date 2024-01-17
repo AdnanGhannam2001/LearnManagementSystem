@@ -20,7 +20,7 @@ export class AuthService {
       where: { email: request.email }
     });
 
-    if (this.compare(request.password, user.password)) {
+    if (!this.compare(request.password, user.password)) {
       throw new BadRequestException('Password is wrong');
     }
 
