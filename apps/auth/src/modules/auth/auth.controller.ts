@@ -3,7 +3,8 @@ import { AuthService } from './auth.service';
 import { AuthServiceController, AuthServiceControllerMethods, AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
 
 @Controller()
-export class AuthController {
+@AuthServiceControllerMethods()
+export class AuthController implements AuthServiceController {
   constructor(private readonly authService: AuthService) {}
 
   register(request: RegisterRequest) {

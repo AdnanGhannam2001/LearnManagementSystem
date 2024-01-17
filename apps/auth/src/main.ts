@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AuthModule } from './auth.module';
+import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { LEARNIO_AUTH_PACKAGE_NAME } from '@protobuf/auth';
 import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AuthModule, {
+    AppModule, {
       transport: Transport.GRPC,
       options: {
         package: LEARNIO_AUTH_PACKAGE_NAME,
