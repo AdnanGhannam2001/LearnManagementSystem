@@ -1,6 +1,6 @@
 import { DatabaseService } from '@database';
 import { Injectable } from '@nestjs/common';
-import { AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
+import { AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -11,9 +11,43 @@ export class AuthService {
               private readonly usersService: UsersService,
               private readonly jwt: JwtService) { }
 
-  register(request: RegisterRequest) { return { email: "works" }; }
+  async register(request: RegisterRequest): Promise<RegisterResponse> {
+    const activateCode = Math.random().toString(16).slice(2);
 
-  verifyEmail(request: VerifyEmailRequest) { return {}; }
+    try {
+      const user = await this.usersService.create({
+        data: {
+          ...request,
+          bio: "", // TODO: make it optional
+          activateCode,
+          settings: { create: { } },
+          cart: { create: { } }
+        }
+      });
+
+      return { email: user.email }; // TODO: return activateCode
+    } catch (error) {
+      return { error: { code: 400, message: error.message } };
+    }
+  }
+
+  async verifyEmail(request: VerifyEmailRequest): Promise<VerifyEmailResponse> {
+    const user = await this.usersService.findOne({ where: { email: request.email } });
+
+    if (!user) {
+      return { error: { code: 404, message: "User not found" } };
+    }
+
+    if (user.isActivated) {
+      return { error: { code: 400, message: "Account already activated" } };
+    }
+
+    if (request.code != user.activateCode) {
+      return { error: { code: 400, message: "Code is wrong" } };
+    }
+
+    await this.usersService.update({ where: { id: user.id }, data: { isActivated: true } });
+  }
 
   async login(request: LoginRequest): Promise<LoginResponse> {
     const user = await this.usersService.findOne({
