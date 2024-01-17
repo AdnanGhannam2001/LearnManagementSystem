@@ -11,8 +11,4 @@ export class UsersService implements OnModuleInit {
     onModuleInit() {
         this.authService = this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
     }
-
-    login() {
-        
-    }
 }

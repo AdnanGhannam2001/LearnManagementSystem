@@ -17,8 +17,8 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
         this.authService = this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
     }
 
-    async validate(username: string, password: string) {
-        const response = await firstValueFrom(this.authService.login({ email: username, password }))
+    async validate(email: string, password: string) {
+        const response = await firstValueFrom(this.authService.login({ email, password }))
 
         if (response.error) {
             throw new HttpException(response.error.message, response.error.code);
