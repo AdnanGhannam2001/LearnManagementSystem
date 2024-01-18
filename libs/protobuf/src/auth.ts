@@ -41,15 +41,6 @@ export enum ObjectType {
   UNRECOGNIZED = -1,
 }
 
-export enum Role {
-  NORMAL_USER = 0,
-  COACH = 1,
-  MODERATOR = 2,
-  ADMIN = 3,
-  ROOT = 4,
-  UNRECOGNIZED = -1,
-}
-
 export interface RegisterRequest {
   name: string;
   email: string;
@@ -91,7 +82,7 @@ export interface AuthenticateRequest {
 
 export interface RoleAuthorizeRequest {
   token: string;
-  requiredRole: Role;
+  requiredPermissions: string[];
 }
 
 export interface ClaimsAuthorizeRequest {

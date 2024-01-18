@@ -4,6 +4,7 @@ import { AuthResponse, AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
+import { Permissions } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -77,6 +78,7 @@ export class AuthService {
     return { token };
   }
 
+  // TODO: Improve this and roleAuthorize
   async authenticate(request: AuthenticateRequest): Promise<AuthResponse> {
     if (!request.token) {
       return { error: { code: 403, message: "You have to be logged in" } };
@@ -91,7 +93,23 @@ export class AuthService {
     }
   }
 
-  roleAuthorize(request: RoleAuthorizeRequest) { return { allowed: true }; }
+  async roleAuthorize(request: RoleAuthorizeRequest) { // TODO: get user instead
+    if (!request.token) {
+      return { error: { code: 403, message: "You have to be logged in" } };
+    }
+
+    try {
+      const user = await this.extractUserFromToken(request.token);
+
+      if (!this.hasPermission(user.permission, request.requiredPermissions)) {
+        return { error: { code: 401, message: "You don't have the previlege to preform this action" } };
+      }
+    } catch (error) {
+      return { error: { code: 403, message: error.message } };
+    }
+
+    return { allowed: true };
+  }
 
   claimsAuthorize(request: ClaimsAuthorizeRequest) { return { allowed: true }; }
 
@@ -117,5 +135,9 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  private hasPermission(permission: Permissions, requiredPermissions: string[]) {
+    return requiredPermissions.includes(permission);
   }
 }

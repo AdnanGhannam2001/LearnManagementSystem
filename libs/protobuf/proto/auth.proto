@@ -52,14 +52,6 @@ enum ObjectType {
     ANNOUNCEMENT = 23;
 }
 
-enum Role {
-    NORMAL_USER = 0;
-    COACH = 1;
-    MODERATOR = 2;
-    ADMIN = 3;
-    ROOT = 4;
-}
-
 message RegisterRequest {
     string name = 1;
     string email = 2;
@@ -105,7 +97,7 @@ message AuthenticateRequest {
 
 message RoleAuthorizeRequest {
     string token = 1;
-    Role required_role = 2;
+    repeated string required_permissions = 2;
 }
 
 message ClaimsAuthorizeRequest {
