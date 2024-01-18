@@ -83,13 +83,9 @@ export class AuthService {
     }
 
     try {
-      const payload = await this.extractToken(request.token);
+      const user = await this.extractUserFromToken(request.token);
 
-      if (payload.id && await this.usersService.findOne({ where: { id: payload.id } })) {
-        return { allowed: true };
-      }
-
-      throw new Error("Invalid token");
+      return { allowed: true }; // TODO: return user instead
     } catch (error) {
       return { error: { code: 403, message: error.message } };
     }
@@ -107,7 +103,19 @@ export class AuthService {
     return this.jwt.signAsync(payload);
   }
 
-  private extractToken(token: string) {
-    return this.jwt.verifyAsync(token);
+  private async extractUserFromToken(token: string) {
+    const payload = await this.jwt.verifyAsync(token);
+
+    if (!payload.id) {
+      throw new Error("Invalid token");
+    }
+
+    const user = await this.usersService.findOne({ where: { id: payload.id } })
+
+    if (!user) {
+      throw new Error("The user is maybe deleted");
+    }
+
+    return user;
   }
 }
