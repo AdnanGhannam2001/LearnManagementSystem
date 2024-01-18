@@ -68,8 +68,13 @@ message RegisterRequest {
 
 message RegisterResponse {
     oneof data {
-        string email = 1;
+        Success success = 1;
         Error error = 2;
+    }
+
+    message Success {
+        string email = 1;
+        string activateCode = 2;
     }
 }
 
@@ -95,16 +100,16 @@ message LoginResponse {
 }
 
 message AuthenticateRequest {
-    string id = 1;
+    string token = 1;
 }
 
 message RoleAuthorizeRequest {
-    string id = 1;
+    string token = 1;
     Role required_role = 2;
 }
 
 message ClaimsAuthorizeRequest {
-    string id = 1;
+    string token = 1;
     string object_id = 2;
     ObjectType object_type = 3;
     Action action = 4;

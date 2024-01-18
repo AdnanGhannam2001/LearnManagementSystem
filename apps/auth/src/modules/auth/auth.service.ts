@@ -1,6 +1,6 @@
 import { DatabaseService } from '@database';
 import { Injectable } from '@nestjs/common';
-import { AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
+import { AuthResponse, AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -25,7 +25,7 @@ export class AuthService {
         }
       });
 
-      return { email: user.email }; // TODO: return activateCode
+      return { success: { email: user.email, activateCode } };
     } catch (error) {
       return { error: { code: 400, message: error.message } };
     }
@@ -77,7 +77,23 @@ export class AuthService {
     return { token };
   }
 
-  authenticate(request: AuthenticateRequest) { return { allowed: true }; }
+  async authenticate(request: AuthenticateRequest): Promise<AuthResponse> {
+    if (!request.token) {
+      return { error: { code: 403, message: "You have to be logged in" } };
+    }
+
+    try {
+      const payload = await this.extractToken(request.token);
+
+      if (payload.id && await this.usersService.findOne({ where: { id: payload.id } })) {
+        return { allowed: true };
+      }
+
+      throw new Error("Invalid token");
+    } catch (error) {
+      return { error: { code: 403, message: error.message } };
+    }
+  }
 
   roleAuthorize(request: RoleAuthorizeRequest) { return { allowed: true }; }
 
@@ -89,5 +105,9 @@ export class AuthService {
 
   private generateToken(payload: Object) {
     return this.jwt.signAsync(payload);
+  }
+
+  private extractToken(token: string) {
+    return this.jwt.verifyAsync(token);
   }
 }

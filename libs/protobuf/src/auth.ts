@@ -57,8 +57,13 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  email?: string | undefined;
+  success?: RegisterResponse_Success | undefined;
   error?: Error | undefined;
+}
+
+export interface RegisterResponse_Success {
+  email: string;
+  activateCode: string;
 }
 
 export interface VerifyEmailRequest {
@@ -81,16 +86,16 @@ export interface LoginResponse {
 }
 
 export interface AuthenticateRequest {
-  id: string;
+  token: string;
 }
 
 export interface RoleAuthorizeRequest {
-  id: string;
+  token: string;
   requiredRole: Role;
 }
 
 export interface ClaimsAuthorizeRequest {
-  id: string;
+  token: string;
   objectId: string;
   objectType: ObjectType;
   action: Action;
