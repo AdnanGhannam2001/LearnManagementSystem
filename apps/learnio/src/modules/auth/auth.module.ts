@@ -3,6 +3,7 @@ import { AuthenticateGuard } from "./guard/authenticate.guard";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 import { AUTH_SERVICE_NAME, LEARNIO_AUTH_PACKAGE_NAME } from "@protobuf/auth";
 import { join } from "path";
+import { RoleAuthorizeGuard } from "./guard/role-authorize.guard";
 
 @Global()
 @Module({
@@ -18,7 +19,13 @@ import { join } from "path";
             }
         ])
     ],
-    providers: [AuthenticateGuard],
-    exports: [AuthenticateGuard]
+    providers: [
+        AuthenticateGuard,
+        RoleAuthorizeGuard
+    ],
+    exports: [
+        AuthenticateGuard,
+        RoleAuthorizeGuard
+    ],
 })
 export class AuthModule { }

@@ -8,7 +8,7 @@ import { firstValueFrom } from "rxjs";
 export class AuthenticateGuard implements CanActivate {
     private authService: AuthServiceClient;
     
-    constructor(@Inject(AUTH_SERVICE_NAME) private authClient: ClientGrpc) {}
+    constructor(@Inject(AUTH_SERVICE_NAME) private readonly authClient: ClientGrpc) {}
 
     onModuleInit() {
         this.authService = this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
