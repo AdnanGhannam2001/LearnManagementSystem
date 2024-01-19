@@ -92,7 +92,8 @@
     "moduleNameMapper": {
       "^@libs/database(|/.*)$": "<rootDir>/libs/database/src/$1",
       "^libs/protobuf(|/.*)$": "<rootDir>/libs/protobuf/src/$1",
-      "^libs/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^libs/rmq(|/.*)$": "<rootDir>/libs/rmq/src/$1"
     }
   }
 }

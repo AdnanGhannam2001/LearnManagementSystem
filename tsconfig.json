@@ -36,6 +36,12 @@
       "@common/*": [
         "libs/common/src/*"
       ],
+      "@rmq": [
+        "libs/rmq/src"
+      ],
+      "@rmq/*": [
+        "libs/rmq/src/*"
+      ],
       "@libs/database": [
         "libs/database/src"
       ],
@@ -53,6 +59,12 @@
       ],
       "@libs/common/*": [
         "libs/common/src/*"
+      ],
+      "@libs/rmq": [
+        "libs/rmq/src"
+      ],
+      "@libs/rmq/*": [
+        "libs/rmq/src/*"
       ]
     }
   }
