@@ -3,7 +3,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 @Injectable()
 export class RmqService {
-    configurations(name: string, noAck: boolean = false): MicroserviceOptions {
+    static configurations(name: string, noAck: boolean = false): MicroserviceOptions {
         return {
             transport: Transport.RMQ,
             options: {

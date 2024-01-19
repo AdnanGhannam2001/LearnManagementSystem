@@ -10,6 +10,7 @@ export class RmqModule {
   static register(name: string): DynamicModule {
     return {
       module: RmqModule,
+      global: true,
       imports: [
         ClientsModule.register([
           {
