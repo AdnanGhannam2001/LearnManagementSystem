@@ -13,6 +13,7 @@ export class MailService implements OnModuleInit {
       secure: true,
       auth: {
         user: 'adnanghannam88@gmail.com',
+        pass: 'EE8D8A70DA5B42094D9DD897D3D457A66B4E' // TODO: put in .env file
       }
     });
   }
