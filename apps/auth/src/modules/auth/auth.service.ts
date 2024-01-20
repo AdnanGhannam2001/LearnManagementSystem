@@ -77,7 +77,6 @@ export class AuthService {
     return { token };
   }
 
-  // TODO: Improve this and roleAuthorize
   async authenticate(request: AuthenticateRequest): Promise<AuthenticateResponse> {
     if (!request.token) {
       return { error: { code: 403, message: "You have to be logged in" } };
@@ -85,6 +84,10 @@ export class AuthService {
 
     try {
       const user = await this.extractUserFromToken(request.token);
+
+      if (!user.isActivated) {
+        throw new Error(`Your accound isn't activated, please verify your email`);
+      }
 
       return { user };
     } catch (error) {
