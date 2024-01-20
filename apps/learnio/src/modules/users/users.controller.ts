@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Render, Req, Res } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { Login } from "./decorator/login.decorator";
 import { Request, Response } from "express";
@@ -8,6 +8,10 @@ import { VerifyEmailRequestDto } from "./dto/verify-email.request";
 @Controller('users')
 export class UsersController {
     constructor(private readonly service: UsersService) { }
+
+    @Get()
+    @Render('layouts/_layout')
+    test() { return { } }
 
     @HttpCode(HttpStatus.NO_CONTENT)
     @Post('register')
