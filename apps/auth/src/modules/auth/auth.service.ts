@@ -19,7 +19,6 @@ export class AuthService {
       const user = await this.usersService.create({
         data: {
           ...request,
-          bio: "", // TODO: make it optional
           activateCode,
           settings: { create: { } },
           cart: { create: { } }
