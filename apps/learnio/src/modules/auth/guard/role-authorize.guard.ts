@@ -24,10 +24,10 @@ export class RoleAuthorizeGuard implements CanActivate, OnModuleInit {
             context.getClass()
         ]);
 
-        const req = context.switchToHttp().getRequest() as Request;
+        const req = context.switchToHttp().getRequest();
 
         const response = await firstValueFrom(this.authService.roleAuthorize({
-            token: req.cookies['jwt'],
+            user: req.user,
             requiredPermissions
         }));
 

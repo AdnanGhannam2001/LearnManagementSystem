@@ -17,12 +17,15 @@ export class AuthenticateGuard implements CanActivate {
     async canActivate(context: ExecutionContext) {
         const req = context.switchToHttp().getRequest() as Request;
 
-        const response = await firstValueFrom(this.authService.authenticate({ token: req.cookies['jwt'] }));
+        const response = await firstValueFrom(
+            this.authService.authenticate({ token: req.cookies['jwt'] }));
 
         if (response.error) {
             throw new HttpException(response.error.message, response.error.code);
         }
 
-        return response.allowed;
+        req.user = response.user;
+
+        return true;
     }
 }

@@ -11,11 +11,11 @@ service AuthService {
 
     rpc Login(LoginRequest) returns (LoginResponse);
 
-    rpc Authenticate(AuthenticateRequest) returns (AuthResponse);
+    rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);
 
-    rpc RoleAuthorize(RoleAuthorizeRequest) returns (AuthResponse);
+    rpc RoleAuthorize(RoleAuthorizeRequest) returns (AuthorizeResponse);
 
-    rpc ClaimsAuthorize(ClaimsAuthorizeRequest) returns (AuthResponse);
+    rpc ClaimsAuthorize(ClaimsAuthorizeRequest) returns (AuthorizeResponse);
 }
 
 enum Action {
@@ -91,23 +91,38 @@ message LoginResponse {
     }
 }
 
+message User {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string permission = 4;
+    bool isActivated = 5;
+}
+
 message AuthenticateRequest {
     string token = 1;
 }
 
+message AuthenticateResponse {
+    oneof data {
+        User user = 1;
+        Error error = 2;
+    }
+}
+
 message RoleAuthorizeRequest {
-    string token = 1;
+    User user = 1;
     repeated string required_permissions = 2;
 }
 
 message ClaimsAuthorizeRequest {
-    string token = 1;
+    User user = 1;
     string object_id = 2;
     ObjectType object_type = 3;
     Action action = 4;
 }
 
-message AuthResponse {
+message AuthorizeResponse {
     oneof data {
         bool allowed = 1;
         Error error = 2;

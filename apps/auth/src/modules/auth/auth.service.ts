@@ -1,6 +1,6 @@
 import { DatabaseService } from '@database';
 import { Injectable } from '@nestjs/common';
-import { AuthResponse, AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
+import { AuthenticateRequest, AuthenticateResponse, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -78,7 +78,7 @@ export class AuthService {
   }
 
   // TODO: Improve this and roleAuthorize
-  async authenticate(request: AuthenticateRequest): Promise<AuthResponse> {
+  async authenticate(request: AuthenticateRequest): Promise<AuthenticateResponse> {
     if (!request.token) {
       return { error: { code: 403, message: "You have to be logged in" } };
     }
@@ -86,25 +86,15 @@ export class AuthService {
     try {
       const user = await this.extractUserFromToken(request.token);
 
-      return { allowed: true }; // TODO: return user instead
+      return { user };
     } catch (error) {
       return { error: { code: 403, message: error.message } };
     }
   }
 
-  async roleAuthorize(request: RoleAuthorizeRequest) { // TODO: get user instead
-    if (!request.token) {
-      return { error: { code: 403, message: "You have to be logged in" } };
-    }
-
-    try {
-      const user = await this.extractUserFromToken(request.token);
-
-      if (!this.hasPermission(user.permission, request.requiredPermissions)) {
-        return { error: { code: 401, message: "You don't have the previlege to preform this action" } };
-      }
-    } catch (error) {
-      return { error: { code: 403, message: error.message } };
+  async roleAuthorize(request: RoleAuthorizeRequest) {
+    if (!this.hasPermission(request.user.permission, request.requiredPermissions)) {
+      return { error: { code: 401, message: "You don't have the previlege to preform this action" } };
     }
 
     return { allowed: true };
@@ -136,7 +126,7 @@ export class AuthService {
     return user;
   }
 
-  private hasPermission(permission: Permissions, requiredPermissions: string[]) {
+  private hasPermission(permission: string, requiredPermissions: string[]) {
     return requiredPermissions.includes(permission);
   }
 }

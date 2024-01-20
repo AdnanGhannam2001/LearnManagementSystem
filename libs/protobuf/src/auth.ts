@@ -76,23 +76,36 @@ export interface LoginResponse {
   error?: Error | undefined;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  permission: string;
+  isActivated: boolean;
+}
+
 export interface AuthenticateRequest {
   token: string;
 }
 
+export interface AuthenticateResponse {
+  user?: User | undefined;
+  error?: Error | undefined;
+}
+
 export interface RoleAuthorizeRequest {
-  token: string;
+  user: User | undefined;
   requiredPermissions: string[];
 }
 
 export interface ClaimsAuthorizeRequest {
-  token: string;
+  user: User | undefined;
   objectId: string;
   objectType: ObjectType;
   action: Action;
 }
 
-export interface AuthResponse {
+export interface AuthorizeResponse {
   allowed?: boolean | undefined;
   error?: Error | undefined;
 }
@@ -106,11 +119,11 @@ export interface AuthServiceClient {
 
   login(request: LoginRequest): Observable<LoginResponse>;
 
-  authenticate(request: AuthenticateRequest): Observable<AuthResponse>;
+  authenticate(request: AuthenticateRequest): Observable<AuthenticateResponse>;
 
-  roleAuthorize(request: RoleAuthorizeRequest): Observable<AuthResponse>;
+  roleAuthorize(request: RoleAuthorizeRequest): Observable<AuthorizeResponse>;
 
-  claimsAuthorize(request: ClaimsAuthorizeRequest): Observable<AuthResponse>;
+  claimsAuthorize(request: ClaimsAuthorizeRequest): Observable<AuthorizeResponse>;
 }
 
 export interface AuthServiceController {
@@ -122,11 +135,17 @@ export interface AuthServiceController {
 
   login(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
 
-  authenticate(request: AuthenticateRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
+  authenticate(
+    request: AuthenticateRequest,
+  ): Promise<AuthenticateResponse> | Observable<AuthenticateResponse> | AuthenticateResponse;
 
-  roleAuthorize(request: RoleAuthorizeRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
+  roleAuthorize(
+    request: RoleAuthorizeRequest,
+  ): Promise<AuthorizeResponse> | Observable<AuthorizeResponse> | AuthorizeResponse;
 
-  claimsAuthorize(request: ClaimsAuthorizeRequest): Promise<AuthResponse> | Observable<AuthResponse> | AuthResponse;
+  claimsAuthorize(
+    request: ClaimsAuthorizeRequest,
+  ): Promise<AuthorizeResponse> | Observable<AuthorizeResponse> | AuthorizeResponse;
 }
 
 export function AuthServiceControllerMethods() {
