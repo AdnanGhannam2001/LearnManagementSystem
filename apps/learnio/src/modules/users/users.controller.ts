@@ -15,7 +15,7 @@ export class UsersController {
 
     @HttpCode(HttpStatus.NO_CONTENT)
     @Post('register')
-    @Redirect('/users/verify-email', 301)
+    @Redirect('/users/verify-email')
     register(@Body() dto: RegisterRequestDto) {
         return this.service.register(dto);
     }
@@ -25,7 +25,7 @@ export class UsersController {
     getVerifyEmail() { }
 
     @HttpCode(HttpStatus.NO_CONTENT)
-    @Redirect('/users/login', 301)
+    @Redirect('/users/login')
     @Post('verify-email')
     verifyEmail(@Body() dto: VerifyEmailRequestDto) {
         return this.verifyEmail(dto);
