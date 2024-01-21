@@ -1,0 +1,12 @@
+extends ../layouts/sign
+
+block sign-content 
+    form(hx-post='/users/verify-email' hx-target-4*='#errors')
+        div
+            label(for='email') Email
+            input(name='email' type='email' id='email')
+        div 
+            label(for='code') Code
+            input(name='code' type='text' id='code')
+        p#errors
+        button(type='submit') Verify Code

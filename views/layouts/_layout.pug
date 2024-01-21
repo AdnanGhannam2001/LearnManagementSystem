@@ -6,14 +6,14 @@ html
         title=(title || 'Learn io')
         block styles
             link(rel="stylesheet" href="/css/bootstrap.min.css")
+            link(rel="preconnect" href="https://fonts.googleapis.com")
+            link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+            link(href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet")
             link(rel='stylesheet' href='/css/global.css')
         block scripts
             script(src='/js/htmx.min.js')
+            script(src="https://unpkg.com/htmx.org/dist/ext/response-targets.js")
             script(src="/js/bootstrap.bundle.min.js")
 
-    body
-        include ../partials/navbar
-
+    body(hx-ext='response-targets')
         block content
-
-        include ../partials/footer

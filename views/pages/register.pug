@@ -1,0 +1,15 @@
+extends ../layouts/sign
+
+block sign-content 
+    form(hx-post='/users/register' hx-target-4*='#errors')
+        div 
+            label(for='name') Name
+            input(name='name' type='text' id='name')
+        div
+            label(for='email') Email
+            input(name='email' type='email' id='email')
+        div 
+            label(for='password') Password
+            input(name='password' type='password' id='password')
+        p#errors
+        button(type='submit') Register

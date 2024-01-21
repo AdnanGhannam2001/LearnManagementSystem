@@ -1,0 +1,12 @@
+extends ../layouts/sign
+
+block sign-content 
+    form(hx-post='/users/login' hx-target-4*='#errors')
+        div
+            label(for='email') Email
+            input(name='username' type='email' id='email')
+        div 
+            label(for='password') Password
+            input(name='password' type='password' id='password')
+        p#errors
+        button(type='submit') Login

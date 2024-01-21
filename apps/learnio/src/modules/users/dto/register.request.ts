@@ -1,7 +1,7 @@
-import { IsEmail, IsStrongPassword, MaxLength } from "class-validator";
+import { IsEmail, IsString, IsStrongPassword, Length, MaxLength } from "class-validator";
 
 export class RegisterRequestDto {
-    @MaxLength(40)
+    @Length(4, 40)
     readonly name: string;
 
     @IsEmail()
