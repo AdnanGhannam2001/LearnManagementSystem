@@ -46,4 +46,10 @@ export class UsersController {
                 maxAge: 1000 * 60 * 60 * 3, // 3h
             });
     }
+
+    @HttpCode(204)
+    @Post('logout')
+    logout(@Res() res: Response) {
+        res.clearCookie('jwt').end();
+    }
 }

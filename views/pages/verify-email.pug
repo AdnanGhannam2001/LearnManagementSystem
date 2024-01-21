@@ -1,7 +1,7 @@
 extends ../layouts/sign
 
 block sign-content 
-    form(hx-post='/users/verify-email' hx-target-4*='#errors')
+    form(hx-post='/users/verify-email' hx-target="this" hx-target-4*='#errors' hx-swap="outerHTML")
         div
             label(for='email') Email
             input(name='email' type='email' id='email')
