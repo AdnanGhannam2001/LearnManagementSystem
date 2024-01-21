@@ -2,16 +2,17 @@ doctype html
 html
     head
         meta(charset='UTF-8')
+        meta(name="viewport" content="width=device-width, initial-scale=1")
         title=(title || 'Learn io')
         block styles
+            link(rel="stylesheet" href="/css/bootstrap.min.css")
             link(rel='stylesheet' href='/css/global.css')
         block scripts
-            script(src='https://unpkg.com/htmx.org@1.9.10'
-                integrity='sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC'
-                crossorigin='anonymous')
+            script(src='/js/htmx.min.js')
+            script(src="/js/bootstrap.bundle.min.js")
 
     body
-        include ../partials/header
+        include ../partials/navbar
 
         block content
 
