@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { HttpException, Inject, Injectable, OnModuleInit } from "@nestjs/common";
 import { ClientGrpc, ClientProxy } from "@nestjs/microservices";
 import { AUTH_SERVICE_NAME, AuthServiceClient } from "@protobuf/auth";
 import { RegisterRequestDto } from "./dto/register.request";
