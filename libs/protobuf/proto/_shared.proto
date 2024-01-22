@@ -6,3 +6,17 @@ message Error {
     int32 code = 1;
     string message = 2;
 }
+
+message EmptyOrError {
+    oneof data {
+        Empty empty = 1;
+        Error error = 2;
+    }
+}
+
+message GetAllRequest {
+    optional string id = 1; // Last
+    optional string search = 2;
+    optional int32 page_size = 3;
+    optional bool desc = 4;
+}
