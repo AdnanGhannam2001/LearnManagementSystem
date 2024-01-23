@@ -49,11 +49,14 @@ export class UsersController implements UserServiceController {
     }
 
     getSettings(request: GetByIdRequest) {
-        return this.service.getSettings(request);
+        return this.service.getSettingsOrError({ where: { userId: request.id } });
     }
 
     updateSettings(request: UpdateSettingsRequest) {
-        return this.service.updateSettings(request);
+        return this.service.updateSettings({
+            where: { userId: request.id },
+            data: { ...request.settings }
+        });
     }
 
     changePermission(request: ChangePermissionRequest) {

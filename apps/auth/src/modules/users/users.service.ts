@@ -92,11 +92,34 @@ export class UsersService {
         }
     }
 
-    getSettings(request: GetByIdRequest) {
-        return { error: { code: 500, message: "Not Implemented" } };
+    async getSettingsOrError(args: Prisma.SettingsFindUniqueArgs) {
+        const settings = await this.db.settings.findUnique(args);
+
+        if (!settings) {
+            return { error: { code: 404, message: "User Settings is not found" } };
+        }
+
+        return { settings };
     }
 
-    updateSettings(request: UpdateSettingsRequest) {
-        return { error: { code: 500, message: "Not Implemented" } };
+    async updateSettings(args: Prisma.SettingsUpdateArgs) {
+        const result = await this.getSettingsOrError(args);
+
+        if (result.error) {
+            return { error: result.error };
+        }
+
+        try {
+            const settings = await this.db.settings.update(args);
+
+            return { settings };
+        } catch (error) {
+            return {
+                error: {
+                    code: 400,
+                    message: this.db.handle(error)
+                }
+            }
+        }
     }
 }
