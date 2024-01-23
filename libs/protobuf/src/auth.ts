@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Error } from "./_shared";
+import { EmptyOrError, Error } from "./_shared";
 
 export const protobufPackage = "learnio.auth";
 
@@ -41,6 +41,14 @@ export enum ObjectType {
   UNRECOGNIZED = -1,
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  permission: string;
+  isActivated: boolean;
+}
+
 export interface RegisterRequest {
   name: string;
   email: string;
@@ -76,12 +84,11 @@ export interface LoginResponse {
   error?: Error | undefined;
 }
 
-export interface User {
+export interface ChangePasswordRequest {
   id: string;
-  name: string;
-  email: string;
-  permission: string;
-  isActivated: boolean;
+  newPassword: string;
+  password?: string | undefined;
+  resetCode?: string | undefined;
 }
 
 export interface AuthenticateRequest {
@@ -119,6 +126,8 @@ export interface AuthServiceClient {
 
   login(request: LoginRequest): Observable<LoginResponse>;
 
+  changePassword(request: ChangePasswordRequest): Observable<EmptyOrError>;
+
   authenticate(request: AuthenticateRequest): Observable<AuthenticateResponse>;
 
   roleAuthorize(request: RoleAuthorizeRequest): Observable<AuthorizeResponse>;
@@ -134,6 +143,8 @@ export interface AuthServiceController {
   ): Promise<VerifyEmailResponse> | Observable<VerifyEmailResponse> | VerifyEmailResponse;
 
   login(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+
+  changePassword(request: ChangePasswordRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
 
   authenticate(
     request: AuthenticateRequest,
@@ -154,6 +165,7 @@ export function AuthServiceControllerMethods() {
       "register",
       "verifyEmail",
       "login",
+      "changePassword",
       "authenticate",
       "roleAuthorize",
       "claimsAuthorize",

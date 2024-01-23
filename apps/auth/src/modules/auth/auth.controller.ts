@@ -1,12 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthServiceController, AuthServiceControllerMethods, AuthenticateRequest, ClaimsAuthorizeRequest, LoginRequest, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
+import { AuthServiceController, AuthServiceControllerMethods, AuthenticateRequest, ChangePasswordRequest, ClaimsAuthorizeRequest, LoginRequest, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
+import { EmptyOrError } from '@protobuf/_shared';
 
 @Controller()
 @AuthServiceControllerMethods()
 export class AuthController implements AuthServiceController {
   constructor(private readonly authService: AuthService) {}
-
   register(request: RegisterRequest) {
     return this.authService.register(request);
   }
@@ -17,6 +17,10 @@ export class AuthController implements AuthServiceController {
 
   login(request: LoginRequest) {
     return this.authService.login(request);
+  }
+
+  changePassword(request: ChangePasswordRequest) {
+    return this.authService.changePassword(request);
   }
 
   authenticate(request: AuthenticateRequest) {

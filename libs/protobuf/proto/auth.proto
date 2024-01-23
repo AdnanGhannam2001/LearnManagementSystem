@@ -11,6 +11,8 @@ service AuthService {
 
     rpc Login(LoginRequest) returns (LoginResponse);
 
+    rpc ChangePassword(ChangePasswordRequest) returns (EmptyOrError);
+
     rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse);
 
     rpc RoleAuthorize(RoleAuthorizeRequest) returns (AuthorizeResponse);
@@ -52,6 +54,14 @@ enum ObjectType {
     ANNOUNCEMENT = 23;
 }
 
+message User {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string permission = 4;
+    bool isActivated = 5;
+}
+
 message RegisterRequest {
     string name = 1;
     string email = 2;
@@ -91,12 +101,14 @@ message LoginResponse {
     }
 }
 
-message User {
+message ChangePasswordRequest {
     string id = 1;
-    string name = 2;
-    string email = 3;
-    string permission = 4;
-    bool isActivated = 5;
+    string new_password = 2;
+
+    oneof data {
+        string password = 3;
+        string reset_code = 4;
+    }
 }
 
 message AuthenticateRequest {

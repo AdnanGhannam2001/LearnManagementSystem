@@ -1,6 +1,6 @@
 import { DatabaseService } from '@database';
 import { Injectable } from '@nestjs/common';
-import { AuthenticateRequest, AuthenticateResponse, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
+import { AuthenticateRequest, AuthenticateResponse, ChangePasswordRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
@@ -17,6 +17,7 @@ export class AuthService {
     const result = await this.usersService.create({
       data: {
         ...request,
+        password: this.hashPassword(request.password),
         activateCode,
         settings: { create: { } },
         cart: { create: { } }
@@ -86,6 +87,39 @@ export class AuthService {
     return { token };
   }
 
+  async changePassword(request: ChangePasswordRequest) {
+    const user = await this.usersService.findOne({
+      where: { id: request.id }
+    });
+
+    if (!user) {
+      return {
+        error: {
+          code: 404,
+          message: "User is not found",
+        }
+      }
+    }
+
+    if (!this.compare(request.password, user.password)) {
+      return {
+        error: {
+          code: 400,
+          message: "Password is wrong",
+        }
+      }
+    }
+
+    const result = await this.usersService.update({
+      where: { id: request.id },
+      data: { password: this.hashPassword(request.newPassword) }
+    });
+
+    if (result.error) {
+      return { error: result.error };
+    }
+  }
+
   async authenticate(request: AuthenticateRequest): Promise<AuthenticateResponse> {
     if (!request.token) {
       return { error: { code: 403, message: "You have to be logged in" } };
@@ -113,6 +147,10 @@ export class AuthService {
   }
 
   claimsAuthorize(request: ClaimsAuthorizeRequest) { return { allowed: true }; }
+
+  private hashPassword(password: string) {
+    return createHash("sha256").update(password).digest("hex");
+  }
 
   private compare(plainText: string, hashed: string) {
     return createHash("sha256").update(plainText).digest("hex") == hashed;
