@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package learnio.user;
 
-// import "google/protobuf/timestamp.proto";
-// import "google/protobuf/any.proto";
 import "_shared.proto";
 
 service UserService {
@@ -15,8 +13,6 @@ service UserService {
 
     rpc DeleteById(GetByIdRequest) returns (EmptyOrError);
 
-    rpc ChangePassword(ChangePasswordRequest) returns (EmptyOrError);
-
     rpc ChangeImage(ChangeImageRequest) returns (EmptyOrError);
 
     rpc GetSettings(GetByIdRequest) returns (GetSettingsResponse);
@@ -24,14 +20,6 @@ service UserService {
     rpc UpdateSettings(UpdateSettingsRequest) returns (GetSettingsResponse);
 
     rpc ChangePermission(ChangePermissionRequest) returns (EmptyOrError);
-
-    rpc Apply(ApplyRequest) returns (EmptyOrError);
-
-    rpc GetRequestStatus(GetByIdRequest) returns (GetRequestStatusResponse);
-
-    rpc GetAllRequests(GetAllRequest) returns (GetAllRequestsResponse);
-
-    rpc Respond(GetByIdRequest) returns (EmptyOrError);
 }
 
 message User {
@@ -42,21 +30,11 @@ message User {
     optional string image = 5;
     string permission = 6;
     bool is_activated = 7;
-    // google.protobuf.Timestamp joined_at = 8;
-    // google.protobuf.Timestamp updated_at = 9;
 }
 
 message Settings {
     optional bool notifications = 1;
     optional bool emails = 2;
-}
-
-message Apply {
-    string id = 1;
-    string details = 2;
-    // google.protobuf.Any sent_at = 3;
-    string status = 4;
-    string response = 5;
 }
 
 message GetAllResponse {
@@ -81,16 +59,6 @@ message UserResponse {
     }
 }
 
-message ChangePasswordRequest {
-    string id = 1;
-    string new_password = 2;
-
-    oneof data {
-        string password = 3;
-        string reset_code = 4;
-    }
-}
-
 message ChangeImageRequest {
     string id = 1;
     optional string url = 2;
@@ -111,20 +79,4 @@ message GetSettingsResponse {
 message ChangePermissionRequest {
     string id = 1;
     string permission = 2;
-}
-
-message ApplyRequest {
-    string id = 1;
-    string details = 2;
-}
-
-message GetRequestStatusResponse {
-    oneof data {
-        Apply request = 1;
-        Error error = 2;
-    }
-}
-
-message GetAllRequestsResponse {
-    repeated GetRequestStatusResponse requests = 1;
 }

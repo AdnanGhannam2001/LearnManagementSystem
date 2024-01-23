@@ -1,0 +1,65 @@
+import { Controller } from "@nestjs/common";
+import { GetAllRequest } from "@protobuf/_shared";
+import { ChangeImageRequest, ChangePermissionRequest, GetByIdRequest, UpdateRequest, UpdateSettingsRequest, UserServiceController, UserServiceControllerMethods } from "@protobuf/user";
+import { UsersService } from "./users.service";
+import { Permissions } from "@prisma/client";
+
+@Controller()
+@UserServiceControllerMethods()
+export class UsersController implements UserServiceController {
+    constructor(private readonly service: UsersService) { }
+
+    getAll(request: GetAllRequest) {
+        return this.service.findAll({
+            where: {
+                name: {
+                    contains: request.search,
+                    mode: 'insensitive'
+                }
+            },
+            cursor: request.id ? { id: request.id } : undefined,
+            take: request.pageSize ?? 20,
+            orderBy:  { name: request.desc ? 'desc' : 'asc' }
+        });
+    }
+
+    getById(request: GetByIdRequest) {
+        return this.service.findOneOrError({ where: { id: request.id } });
+    }
+
+    updateById(request: UpdateRequest) {
+        return this.service.update({
+            where: { id: request.id },
+            data: {
+                ...(request.name ? { name: request.name } : {}),
+                ...(request.bio ? { bio: request.bio } : {})
+            }
+        });
+    }
+
+    deleteById(request: GetByIdRequest) {
+        return this.service.delete({ where: { id: request.id } });
+    }
+
+    changeImage(request: ChangeImageRequest) {
+        return this.service.update({
+            where: { id: request.id },
+            data: { image: request.url }
+        });
+    }
+
+    getSettings(request: GetByIdRequest) {
+        return this.service.getSettings(request);
+    }
+
+    updateSettings(request: UpdateSettingsRequest) {
+        return this.service.updateSettings(request);
+    }
+
+    changePermission(request: ChangePermissionRequest) {
+        return this.service.update({
+            where: { id: request.id },
+            data: { permission: Permissions[request.permission] }
+        });
+    }
+}

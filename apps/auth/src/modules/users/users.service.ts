@@ -1,8 +1,7 @@
 import { DatabaseService } from "@database";
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { ApplyRequest, ChangeImageRequest, ChangePasswordRequest, ChangePermissionRequest, GetByIdRequest, UpdateRequest, UpdateSettingsRequest } from "@protobuf/user";
-import { GetAllRequest } from "@protobuf/_shared";
+import { GetByIdRequest, UpdateSettingsRequest } from "@protobuf/user";
 
 @Injectable()
 export class UsersService {
@@ -83,6 +82,21 @@ export class UsersService {
 
         try {
             await this.db.user.delete(args);
-        } catch (error) { this.db.handle(error) }
+        } catch (error) {
+            return {
+                error: {
+                    code: 400,
+                    message: this.db.handle(error)
+                }
+            }
+        }
+    }
+
+    getSettings(request: GetByIdRequest) {
+        return { error: { code: 500, message: "Not Implemented" } };
+    }
+
+    updateSettings(request: UpdateSettingsRequest) {
+        return { error: { code: 500, message: "Not Implemented" } };
     }
 }

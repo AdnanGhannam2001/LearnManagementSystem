@@ -12,24 +12,12 @@ export interface User {
   bio?: string | undefined;
   image?: string | undefined;
   permission: string;
-  /**
-   * google.protobuf.Timestamp joined_at = 8;
-   * google.protobuf.Timestamp updated_at = 9;
-   */
   isActivated: boolean;
 }
 
 export interface Settings {
   notifications?: boolean | undefined;
   emails?: boolean | undefined;
-}
-
-export interface Apply {
-  id: string;
-  details: string;
-  /** google.protobuf.Any sent_at = 3; */
-  status: string;
-  response: string;
 }
 
 export interface GetAllResponse {
@@ -52,13 +40,6 @@ export interface UserResponse {
   error?: Error | undefined;
 }
 
-export interface ChangePasswordRequest {
-  id: string;
-  newPassword: string;
-  password?: string | undefined;
-  resetCode?: string | undefined;
-}
-
 export interface ChangeImageRequest {
   id: string;
   url?: string | undefined;
@@ -79,20 +60,6 @@ export interface ChangePermissionRequest {
   permission: string;
 }
 
-export interface ApplyRequest {
-  id: string;
-  details: string;
-}
-
-export interface GetRequestStatusResponse {
-  request?: Apply | undefined;
-  error?: Error | undefined;
-}
-
-export interface GetAllRequestsResponse {
-  requests: GetRequestStatusResponse[];
-}
-
 export const LEARNIO_USER_PACKAGE_NAME = "learnio.user";
 
 export interface UserServiceClient {
@@ -104,8 +71,6 @@ export interface UserServiceClient {
 
   deleteById(request: GetByIdRequest): Observable<EmptyOrError>;
 
-  changePassword(request: ChangePasswordRequest): Observable<EmptyOrError>;
-
   changeImage(request: ChangeImageRequest): Observable<EmptyOrError>;
 
   getSettings(request: GetByIdRequest): Observable<GetSettingsResponse>;
@@ -113,14 +78,6 @@ export interface UserServiceClient {
   updateSettings(request: UpdateSettingsRequest): Observable<GetSettingsResponse>;
 
   changePermission(request: ChangePermissionRequest): Observable<EmptyOrError>;
-
-  apply(request: ApplyRequest): Observable<EmptyOrError>;
-
-  getRequestStatus(request: GetByIdRequest): Observable<GetRequestStatusResponse>;
-
-  getAllRequests(request: GetAllRequest): Observable<GetAllRequestsResponse>;
-
-  respond(request: GetByIdRequest): Observable<EmptyOrError>;
 }
 
 export interface UserServiceController {
@@ -131,8 +88,6 @@ export interface UserServiceController {
   updateById(request: UpdateRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
   deleteById(request: GetByIdRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
-
-  changePassword(request: ChangePasswordRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
 
   changeImage(request: ChangeImageRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
 
@@ -145,18 +100,6 @@ export interface UserServiceController {
   ): Promise<GetSettingsResponse> | Observable<GetSettingsResponse> | GetSettingsResponse;
 
   changePermission(request: ChangePermissionRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
-
-  apply(request: ApplyRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
-
-  getRequestStatus(
-    request: GetByIdRequest,
-  ): Promise<GetRequestStatusResponse> | Observable<GetRequestStatusResponse> | GetRequestStatusResponse;
-
-  getAllRequests(
-    request: GetAllRequest,
-  ): Promise<GetAllRequestsResponse> | Observable<GetAllRequestsResponse> | GetAllRequestsResponse;
-
-  respond(request: GetByIdRequest): Promise<EmptyOrError> | Observable<EmptyOrError> | EmptyOrError;
 }
 
 export function UserServiceControllerMethods() {
@@ -166,15 +109,10 @@ export function UserServiceControllerMethods() {
       "getById",
       "updateById",
       "deleteById",
-      "changePassword",
       "changeImage",
       "getSettings",
       "updateSettings",
       "changePermission",
-      "apply",
-      "getRequestStatus",
-      "getAllRequests",
-      "respond",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

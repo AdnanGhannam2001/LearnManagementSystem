@@ -1,2 +1,6 @@
-each m in error.message
-    li= '*' + m
+if Array.isArray(error.message)
+    each m in error.message
+        li
+            strong= '*' + m
+else
+    strong= '*' + error.message
