@@ -21,7 +21,7 @@ export class AuthenticateGuard implements CanActivate {
             this.authService.authenticate({ token: req.cookies['jwt'] }));
 
         if (response.error) {
-            throw new HttpException(response.error.message, response.error.code);
+            throw new HttpException(response.error, response.error.code);
         }
 
         req.user = response.user;

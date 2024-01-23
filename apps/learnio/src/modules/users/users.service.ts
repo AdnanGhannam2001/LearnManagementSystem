@@ -22,16 +22,16 @@ export class UsersService implements OnModuleInit {
         const response = await firstValueFrom(this.authService.register(dto));
 
         if (response.error) {
-            throw new HttpException(response.error.message, response.error.code);
+            throw new HttpException(response.error, response.error.code);
         }
 
         const mail: Mail = {
             receiver: response.success.email,
             subject: 'Thank you for registering on Learn.io!',
             body: `Verification Code: ${response.success.activateCode}` +
-                    `If you haven't registered on [Your Website Name], please ignore this email.` +
-                    `If you have any questions or concerns, feel free to contact our support team at 'learn-io@support.com'.` +
-                    `Best regards,` +
+                    `If you haven't registered on Learn.io, please ignore this email.` +
+                    `If you have any questions or concerns, feel free to contact our support team at 'support@learn.io` +
+                    `Best regards` +
                     `Learn.io Team'`
         };
 
@@ -42,7 +42,7 @@ export class UsersService implements OnModuleInit {
         const response = await firstValueFrom(this.authService.verifyEmail(dto));
 
         if (response.error) {
-            throw new HttpException(response.error.message, response.error.code);
+            throw new HttpException(response.error, response.error.code);
         }
     }
 }

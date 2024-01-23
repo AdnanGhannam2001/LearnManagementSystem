@@ -32,7 +32,7 @@ export class RoleAuthorizeGuard implements CanActivate, OnModuleInit {
         }));
 
         if (response.error) {
-            throw new HttpException(response.error.message, response.error.code);
+            throw new HttpException(response.error, response.error.code);
         }
 
         return response.allowed;

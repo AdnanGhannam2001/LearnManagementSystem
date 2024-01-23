@@ -21,7 +21,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
         const response = await firstValueFrom(this.authService.login({ email, password }))
 
         if (response.error) {
-            throw new HttpException(response.error.message, response.error.code);
+            throw new HttpException(response.error, response.error.code);
         }
 
         return response.token;

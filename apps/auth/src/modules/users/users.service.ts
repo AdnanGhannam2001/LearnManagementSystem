@@ -1,8 +1,8 @@
 import { DatabaseService } from "@database";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { RpcException } from "@nestjs/microservices";
+import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { status as grpcStatus } from '@grpc/grpc-js';
+import { ApplyRequest, ChangeImageRequest, ChangePasswordRequest, ChangePermissionRequest, GetByIdRequest, UpdateRequest, UpdateSettingsRequest } from "@protobuf/user";
+import { GetAllRequest } from "@protobuf/_shared";
 
 @Injectable()
 export class UsersService {
@@ -10,53 +10,76 @@ export class UsersService {
 
     async findAll(args: Prisma.UserFindManyArgs) {
         if (args.take) {
-
             return {
-                data: await this.db.user.findMany(args),
+                users: await this.db.user.findMany(args),
                 count: await this.db.user.count({ where: args.where })
             }
         }
 
-        return this.db.user.findMany(args);
+        return { users: await this.db.user.findMany(args), count: undefined };
     }
 
     findOne(args: Prisma.UserFindUniqueArgs) {
         return this.db.user.findUnique(args);
     }
 
-    async findOneOrThrow(args: Prisma.UserFindUniqueArgs) {
+    async findOneOrError(args: Prisma.UserFindUniqueArgs) {
         const user = await this.db.user.findUnique(args);
         
         if (!user) {
-            throw new RpcException({
-                code: grpcStatus.NOT_FOUND,
-                message: "User not found"
-            });
+            return {
+                error: {
+                    code: 404,
+                    message: "User is not found",
+                }
+            }
         }
 
-        return user;
+        return { user };
     }
 
     async create(args: Prisma.UserCreateArgs) {
         try {
             const user = await this.db.user.create(args);
 
-            return user;
-        } catch (error) { this.db.handle(error) }
+            return { user };
+        } catch (error) {
+            return {
+                error: {
+                    code: 400,
+                    message: this.db.handle(error)
+                }
+            }
+        }
     }
 
     async update(args: Prisma.UserUpdateArgs) {
-        await this.findOneOrThrow(args);
+        const results = await this.findOneOrError(args);
+
+        if (results.error) {
+            return { error: results.error };
+        }
 
         try {
             const user = await this.db.user.update(args);
 
-            return user;
-        } catch (error) { this.db.handle(error) }
+            return { user };
+        } catch (error) {
+            return {
+                error: {
+                    code: 400,
+                    message: this.db.handle(error)
+                }
+            }
+        }
     }
 
     async delete(args: Prisma.UserDeleteArgs) {
-        await this.findOneOrThrow(args);
+        const results = await this.findOneOrError(args);
+
+        if (results.error) {
+            return { error: results.error };
+        }
 
         try {
             await this.db.user.delete(args);

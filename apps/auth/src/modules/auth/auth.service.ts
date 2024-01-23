@@ -4,7 +4,6 @@ import { AuthenticateRequest, AuthenticateResponse, ClaimsAuthorizeRequest, Logi
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { Permissions } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -15,20 +14,20 @@ export class AuthService {
   async register(request: RegisterRequest): Promise<RegisterResponse> {
     const activateCode = Math.random().toString(16).slice(2);
 
-    try {
-      const user = await this.usersService.create({
-        data: {
-          ...request,
-          activateCode,
-          settings: { create: { } },
-          cart: { create: { } }
-        }
-      });
+    const result = await this.usersService.create({
+      data: {
+        ...request,
+        activateCode,
+        settings: { create: { } },
+        cart: { create: { } }
+      }
+    });
 
-      return { success: { email: user.email, activateCode } };
-    } catch (error) {
-      return { error: { code: 400, message: error.message } };
+    if (result.error) {
+      return { error: result.error };
     }
+
+    return { success: { email: result.user.email, activateCode } };
   }
 
   async verifyEmail(request: VerifyEmailRequest): Promise<VerifyEmailResponse> {
@@ -46,7 +45,17 @@ export class AuthService {
       return { error: { code: 400, message: "Code is wrong" } };
     }
 
-    await this.usersService.update({ where: { id: user.id }, data: { isActivated: true } });
+    const result = await this.usersService.update({
+      where: { id: user.id },
+      data: {
+        isActivated: true,
+        activateCode: null
+      }
+    });
+
+    if (result.error) {
+      return { error: result.error };
+    }
   }
 
   async login(request: LoginRequest): Promise<LoginResponse> {
