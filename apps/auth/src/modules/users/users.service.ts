@@ -1,7 +1,6 @@
 import { DatabaseService } from "@database";
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { GetByIdRequest, UpdateSettingsRequest } from "@protobuf/user";
 
 @Injectable()
 export class UsersService {
@@ -53,7 +52,7 @@ export class UsersService {
     }
 
     async update(args: Prisma.UserUpdateArgs) {
-        const results = await this.findOneOrError(args);
+        const results = await this.findOneOrError({ where: args.where });
 
         if (results.error) {
             return { error: results.error };
@@ -74,7 +73,7 @@ export class UsersService {
     }
 
     async delete(args: Prisma.UserDeleteArgs) {
-        const results = await this.findOneOrError(args);
+        const results = await this.findOneOrError({ where: args.where });
 
         if (results.error) {
             return { error: results.error };

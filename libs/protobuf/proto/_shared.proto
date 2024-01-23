@@ -20,3 +20,17 @@ message GetAllRequest {
     optional int32 page_size = 3;
     optional bool desc = 4;
 }
+
+message GetByIdRequest {
+    string id = 1;
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    optional string bio = 4;
+    optional string image = 5;
+    string permission = 6;
+    bool is_activated = 7;
+}

@@ -23,4 +23,18 @@ export interface GetAllRequest {
   desc?: boolean | undefined;
 }
 
+export interface GetByIdRequest {
+  id: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  bio?: string | undefined;
+  image?: string | undefined;
+  permission: string;
+  isActivated: boolean;
+}
+
 export const _PACKAGE_NAME = "";

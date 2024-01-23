@@ -1,9 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Redirect, Render, Req, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, Redirect, Render, Req, Res } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { Login } from "./decorator/login.decorator";
 import { Request, Response } from "express";
 import { RegisterRequestDto } from "./dto/register.request";
 import { VerifyEmailRequestDto } from "./dto/verify-email.request";
+import { Authenticate } from "../auth/decorator/authenticate.decorator";
+import { ClaimsAuthorize } from "../auth/decorator/claims-authorize.decorator";
+import { Action, ObjectType } from "@protobuf/auth";
+import { UpdateUserRequestDto } from "./dto/update-user.request";
 
 @Controller('users')
 export class UsersController {
@@ -51,5 +55,45 @@ export class UsersController {
     @Post('logout')
     logout(@Res() res: Response) {
         res.clearCookie('jwt').end();
+    }
+
+    @Get()
+    @Authenticate()
+    getAll(@Query('id') id = '',
+        @Query('search') search = '',
+        @Query('pageSize', new ParseIntPipe({ optional: true })) pageSize = 20,
+        @Query('desc', new ParseBoolPipe({ optional: true })) desc = false)
+    {
+        return this.service.getAll({ id, search, pageSize, desc });
+    }
+
+    @Get(':id')
+    @ClaimsAuthorize({
+        objectType: ObjectType.USER,
+        action: Action.READ
+    })
+    @Authenticate()
+    getById(@Param('id') id) {
+        return this.service.getById({ id });
+    }
+
+    @Patch(':id')
+    @ClaimsAuthorize({
+        objectType: ObjectType.USER,
+        action: Action.UPDATE
+    })
+    @Authenticate()
+    update(@Param('id') id, @Body() dto: UpdateUserRequestDto) {
+        return this.service.update({ id, ...dto });
+    }
+
+    @Delete(':id')
+    @ClaimsAuthorize({
+        objectType: ObjectType.USER,
+        action: Action.DELETE
+    })
+    @Authenticate()
+    delete(@Param('id') id) {
+        return this.service.delete({ id });
     }
 }

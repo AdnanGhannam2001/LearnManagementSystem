@@ -1,9 +1,11 @@
 import { DatabaseService } from '@database';
 import { Injectable } from '@nestjs/common';
-import { AuthenticateRequest, AuthenticateResponse, ChangePasswordRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
+import { Action, AuthenticateRequest, AuthenticateResponse, AuthorizeResponse, ChangePasswordRequest, ClaimsAuthorizeRequest, LoginRequest, LoginResponse, ObjectType, RegisterRequest, RegisterResponse, RoleAuthorizeRequest, VerifyEmailRequest, VerifyEmailResponse } from '@protobuf/auth';
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@protobuf/_shared';
+import { Permissions } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -146,7 +148,69 @@ export class AuthService {
     return { allowed: true };
   }
 
-  claimsAuthorize(request: ClaimsAuthorizeRequest) { return { allowed: true }; }
+  claimsAuthorize(request: ClaimsAuthorizeRequest): AuthorizeResponse {
+    const response = { error: undefined, allowed: undefined };
+
+    switch (request.objectType) {
+      case ObjectType.USER:
+        response.allowed = this.ObjectUser(request);
+        break;
+      case ObjectType.NOTIFICATION:
+        break;
+      case ObjectType.SETTINGS:
+        break;
+      case ObjectType.APPLY_REQUEST:
+        break;
+      case ObjectType.COURSE:
+        break;
+      case ObjectType.UNIT:
+        break;
+      case ObjectType.LESSON:
+        break;
+      case ObjectType.FOLDER:
+        break;
+      case ObjectType.FILE:
+        break;
+      case ObjectType.QUIZ_QUESTION:
+        break;
+      case ObjectType.CHOISE:
+        break;
+      case ObjectType.COMMENT:
+        break;
+      case ObjectType.VOTE:
+        break;
+      case ObjectType.CHAT:
+        break;
+      case ObjectType.MESSAGE:
+        break;
+      case ObjectType.RESOURCE:
+        break;
+      case ObjectType.CART:
+        break;
+      case ObjectType.ROLLED:
+        break;
+      case ObjectType.PAYMENT:
+        break;
+      case ObjectType.MEMBER:
+        break;
+      case ObjectType.DONE:
+        break;
+      case ObjectType.RATE:
+        break;
+      case ObjectType.QUESTION:
+        break;
+      case ObjectType.ANNOUNCEMENT:
+        break;
+      case ObjectType.UNRECOGNIZED:
+        break;
+    }
+
+    if (!response.allowed) {
+      response.error = { code: 401, message: `You can't preform this action` };
+    }
+
+    return response;
+  }
 
   private hashPassword(password: string) {
     return createHash("sha256").update(password).digest("hex");
@@ -178,5 +242,32 @@ export class AuthService {
 
   private hasPermission(permission: string, requiredPermissions: string[]) {
     return requiredPermissions.includes(permission);
+  }
+
+  private hasMinPermission(permission: string, minPermission: string) {
+    const permissions = [
+      Permissions.NormalUser,
+      Permissions.Coach,
+      Permissions.Moderator,
+      Permissions.Admin,
+      Permissions.Root
+    ] as string[];
+    
+    return permissions.indexOf(permission) >= permissions.indexOf(minPermission);
+  }
+
+  // Claims Authorization
+  private ObjectUser(options: ClaimsAuthorizeRequest): boolean {
+    switch (options.action) {
+      case Action.READ:
+        return true;
+      case Action.UPDATE:
+        return options.user.id == options.objectId;
+      case Action.DELETE:
+        return options.user.id == options.objectId
+          || this.hasMinPermission(options.user.permission, Permissions.Moderator);
+    }
+
+    return false;
   }
 }

@@ -1,6 +1,6 @@
 import { Controller } from "@nestjs/common";
-import { GetAllRequest } from "@protobuf/_shared";
-import { ChangeImageRequest, ChangePermissionRequest, GetByIdRequest, UpdateRequest, UpdateSettingsRequest, UserServiceController, UserServiceControllerMethods } from "@protobuf/user";
+import { GetAllRequest, GetByIdRequest } from "@protobuf/_shared";
+import { ChangeImageRequest, ChangePermissionRequest, UpdateRequest, UpdateSettingsRequest, UserServiceController, UserServiceControllerMethods } from "@protobuf/user";
 import { UsersService } from "./users.service";
 import { Permissions } from "@prisma/client";
 

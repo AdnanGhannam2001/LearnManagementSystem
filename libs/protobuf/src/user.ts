@@ -1,19 +1,9 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { EmptyOrError, Error, GetAllRequest } from "./_shared";
+import { EmptyOrError, Error, GetAllRequest, GetByIdRequest, User } from "./_shared";
 
 export const protobufPackage = "learnio.user";
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  bio?: string | undefined;
-  image?: string | undefined;
-  permission: string;
-  isActivated: boolean;
-}
 
 export interface Settings {
   notifications?: boolean | undefined;
@@ -23,10 +13,6 @@ export interface Settings {
 export interface GetAllResponse {
   users: User[];
   count: number;
-}
-
-export interface GetByIdRequest {
-  id: string;
 }
 
 export interface UpdateRequest {
