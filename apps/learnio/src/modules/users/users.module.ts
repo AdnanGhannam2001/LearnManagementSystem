@@ -2,11 +2,12 @@ import { Module } from "@nestjs/common";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { ClientsModule, Transport } from "@nestjs/microservices";
-import { AUTH_SERVICE_NAME, LEARNIO_AUTH_PACKAGE_NAME } from "@protobuf/auth";
+import { LEARNIO_AUTH_PACKAGE_NAME } from "@protobuf/auth";
 import { join } from "path";
 import { LocalStrategy } from "./strategy/local.strategy";
 import { LEARNIO_USER_PACKAGE_NAME } from "@protobuf/user";
 import { AUTH_SERVICE } from "../../constants";
+import { UsersApiController } from "./users-api.controller";
 
 @Module({
     imports: [
@@ -27,7 +28,10 @@ import { AUTH_SERVICE } from "../../constants";
             }
         ])
     ],
-    controllers: [UsersController],
+    controllers: [
+        UsersController,
+        UsersApiController
+    ],
     providers: [
         UsersService,
         LocalStrategy
