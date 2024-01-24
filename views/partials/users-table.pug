@@ -1,0 +1,24 @@
+div#results
+    - const current = paginator.currentPage
+    - const total = paginator.totalPages
+    - const count = paginator.count
+    - const pageSize = Math.ceil(count / total)
+    - const skip = pageSize * (current - 1)
+
+    each user in users
+        //- TODO
+        h6= user.name
+
+    nav(aria-label="Page navigation")
+    ul(class="pagination")
+        li(class="page-item")
+            button(class=`page-link ${current == 1 && 'disabled'}`
+                hx-target='#results'
+                hx-get=`/api/users?pageSize=${pageSize}&skip=${skip - pageSize}`
+            ) Previous
+        li(class="page-item")
+            button(class=`page-link ${current == total && 'disabled'}`
+                hx-target='#results'
+                hx-get=`/api/users?pageSize=${pageSize}&skip=${skip + pageSize}`
+            ) Next
+    strong= current + ' out of ' + total + ' (' + count + ' item)'

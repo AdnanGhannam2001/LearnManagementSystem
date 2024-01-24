@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, Redirect, Req, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, Redirect, Render, Req, Res } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { Login } from "./decorator/login.decorator";
 import { Request, Response } from "express";
@@ -46,6 +46,7 @@ export class UsersApiController {
     }
 
     @Get()
+    @Render('partials/users-table')
     @Authenticate()
     async getAll(@Query('search') search = '',
         @Query('skip', new ParseIntPipe({ optional: true })) skip = 0,

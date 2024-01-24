@@ -1,0 +1,6 @@
+extends ../layouts/_layout
+
+block content
+    - const pageSize = 7
+    - const skip = 0
+    div#results(hx-get=`/api/users?pageSize=${pageSize}&skip=${skip}` hx-trigger='load')

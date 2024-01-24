@@ -1,4 +1,5 @@
 import { Controller, Get, Render } from "@nestjs/common";
+import { Authenticate } from "../auth/decorator/authenticate.decorator";
 
 @Controller('users')
 export class UsersController {
@@ -13,4 +14,9 @@ export class UsersController {
     @Get('login')
     @Render('pages/login')
     login() { }
+
+    @Get()
+    @Render('pages/users')
+    @Authenticate()
+    getUsers() { }
 }
