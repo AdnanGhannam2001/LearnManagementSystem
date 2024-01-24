@@ -21,6 +21,12 @@ message GetAllRequest {
     optional bool desc = 4;
 }
 
+message Paginator {
+    int32 count = 1;
+    int32 current_page = 2;
+    int32 total_pages = 3;
+}
+
 message GetByIdRequest {
     string id = 1;
 }

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { EmptyOrError, Error, GetAllRequest, GetByIdRequest, User } from "./_shared";
+import { EmptyOrError, Error, GetAllRequest, GetByIdRequest, Paginator, User } from "./_shared";
 
 export const protobufPackage = "learnio.user";
 
@@ -12,7 +12,7 @@ export interface Settings {
 
 export interface GetAllResponse {
   users: User[];
-  count: number;
+  paginator: Paginator | undefined;
 }
 
 export interface UpdateRequest {

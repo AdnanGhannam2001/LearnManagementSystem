@@ -8,13 +8,16 @@ export class UsersService {
 
     async findAll(args: Prisma.UserFindManyArgs) {
         if (args.take) {
+            const count = await this.db.user.count({ where: args.where });
+            const currentPage = ((args.skip ?? 0) / args.take) + 1;
+            const totalPages = Math.ceil(count / args.take);
             return {
                 users: await this.db.user.findMany(args),
-                count: await this.db.user.count({ where: args.where })
+                paginator: { count, currentPage, totalPages }
             }
         }
 
-        return { users: await this.db.user.findMany(args), count: undefined };
+        return { users: await this.db.user.findMany(args), paginator: undefined };
     }
 
     findOne(args: Prisma.UserFindUniqueArgs) {

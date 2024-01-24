@@ -29,7 +29,7 @@ message Settings {
 
 message GetAllResponse {
     repeated User users = 1;
-    int32 count = 2;
+    Paginator paginator = 2;
 }
 
 message UpdateRequest {

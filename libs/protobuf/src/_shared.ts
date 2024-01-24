@@ -22,6 +22,12 @@ export interface GetAllRequest {
   desc?: boolean | undefined;
 }
 
+export interface Paginator {
+  count: number;
+  currentPage: number;
+  totalPages: number;
+}
+
 export interface GetByIdRequest {
   id: string;
 }
