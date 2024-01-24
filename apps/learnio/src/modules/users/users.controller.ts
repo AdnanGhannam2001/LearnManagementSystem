@@ -59,12 +59,12 @@ export class UsersController {
 
     @Get()
     @Authenticate()
-    getAll(@Query('id') id = '',
-        @Query('search') search = '',
+    getAll(@Query('search') search = '',
+        @Query('skip', new ParseIntPipe({ optional: true })) skip = 0,
         @Query('pageSize', new ParseIntPipe({ optional: true })) pageSize = 20,
         @Query('desc', new ParseBoolPipe({ optional: true })) desc = false)
     {
-        return this.service.getAll({ id, search, pageSize, desc });
+        return this.service.getAll({ search, skip, pageSize, desc });
     }
 
     @Get(':id')

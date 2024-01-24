@@ -15,8 +15,8 @@ message EmptyOrError {
 }
 
 message GetAllRequest {
-    optional string id = 1; // Last
-    optional string search = 2;
+    optional string search = 1;
+    optional int32 skip = 2;
     optional int32 page_size = 3;
     optional bool desc = 4;
 }

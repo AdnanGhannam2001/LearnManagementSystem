@@ -17,7 +17,7 @@ export class UsersController implements UserServiceController {
                     mode: 'insensitive'
                 }
             },
-            cursor: request.id ? { id: request.id } : undefined,
+            skip: request.skip,
             take: request.pageSize ?? 20,
             orderBy:  { name: request.desc ? 'desc' : 'asc' }
         });

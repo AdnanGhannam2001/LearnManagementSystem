@@ -16,9 +16,8 @@ export interface EmptyOrError {
 }
 
 export interface GetAllRequest {
-  /** Last */
-  id?: string | undefined;
   search?: string | undefined;
+  skip?: number | undefined;
   pageSize?: number | undefined;
   desc?: boolean | undefined;
 }
