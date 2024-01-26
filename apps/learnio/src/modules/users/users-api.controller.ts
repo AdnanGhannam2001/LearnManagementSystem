@@ -8,6 +8,8 @@ import { Authenticate } from "../auth/decorator/authenticate.decorator";
 import { ClaimsAuthorize } from "../auth/decorator/claims-authorize.decorator";
 import { Action, ObjectType } from "@protobuf/auth";
 import { UpdateUserRequestDto } from "./dto/update-user.request";
+import { User } from "./decorator/user.decorator";
+import { UpdateSettingsRequestDto } from "./dto/update-settings.request";
 
 @Controller('api/users')
 export class UsersApiController {
@@ -84,5 +86,25 @@ export class UsersApiController {
     @Authenticate()
     delete(@Param('id') id) {
         return this.service.delete({ id });
+    }
+
+    @Get('me/settings')
+    @ClaimsAuthorize({
+        objectType: ObjectType.SETTINGS,
+        action: Action.READ
+    })
+    @Authenticate()
+    getSettings(@User() user) {
+        return this.service.getSettings(user.id);
+    }
+
+    @Patch('me/settings')
+    @ClaimsAuthorize({
+        objectType: ObjectType.SETTINGS,
+        action: Action.READ
+    })
+    @Authenticate()
+    updateSettings(@User() user, @Body() dto: UpdateSettingsRequestDto) {
+        return this.service.updateSettings(user.id, dto);
     }
 }

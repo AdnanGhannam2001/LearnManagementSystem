@@ -8,6 +8,7 @@ import { AUTH_SERVICE, MAIL_SERVICE } from "../../constants";
 import { Mail } from "@common";
 import { USER_SERVICE_NAME, UpdateRequest, UserServiceClient } from "@protobuf/user";
 import { GetAllRequest, GetByIdRequest } from "@protobuf/_shared";
+import { UpdateSettingsRequestDto } from "./dto/update-settings.request";
 
 @Injectable()
 export class UsersService implements OnModuleInit {
@@ -80,5 +81,25 @@ export class UsersService implements OnModuleInit {
         if (response.error) {
             throw new HttpException(response.error, response.error.code);
         }
+    }
+
+    async getSettings(id: string) {
+        const response = await firstValueFrom(this.userService.getSettings({ id }));
+
+        if (response.error) {
+            throw new HttpException(response.error, response.error.code);
+        }
+
+        return response.settings;
+    }
+
+    async updateSettings(id: string, dto: UpdateSettingsRequestDto) {
+        const response = await firstValueFrom(this.userService.updateSettings({ id, settings: dto }));
+
+        if (response.error) {
+            throw new HttpException(response.error, response.error.code);
+        }
+
+        return response.settings;
     }
 }

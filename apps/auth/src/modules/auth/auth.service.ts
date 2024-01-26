@@ -4,7 +4,6 @@ import { Action, AuthenticateRequest, AuthenticateResponse, AuthorizeResponse, C
 import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@protobuf/_shared';
 import { Permissions } from '@prisma/client';
 
 @Injectable()
@@ -158,6 +157,7 @@ export class AuthService {
       case ObjectType.NOTIFICATION:
         break;
       case ObjectType.SETTINGS:
+        response.allowed = this.ObjectSettings(request);
         break;
       case ObjectType.APPLY_REQUEST:
         break;
@@ -244,7 +244,7 @@ export class AuthService {
     return requiredPermissions.includes(permission);
   }
 
-  private hasMinPermission(permission: string, minPermission: string) {
+  private hasHigherPermission(permission: string, minPermission: string) {
     const permissions = [
       Permissions.NormalUser,
       Permissions.Coach,
@@ -253,19 +253,31 @@ export class AuthService {
       Permissions.Root
     ] as string[];
     
-    return permissions.indexOf(permission) >= permissions.indexOf(minPermission);
+    return permissions.indexOf(permission) > permissions.indexOf(minPermission);
   }
 
   // Claims Authorization
-  private ObjectUser(options: ClaimsAuthorizeRequest): boolean {
+  private async ObjectUser(options: ClaimsAuthorizeRequest): Promise<boolean> {
     switch (options.action) {
       case Action.READ:
         return true;
       case Action.UPDATE:
-        return options.user.id == options.objectId;
       case Action.DELETE:
-        return options.user.id == options.objectId
-          || this.hasMinPermission(options.user.permission, Permissions.Moderator);
+        const obj = await this.db.user.findUnique({ where: { id: options.objectId }});
+        return obj && 
+          (options.user.id == options.objectId
+          || this.hasHigherPermission(options.user.permission, obj.permission));
+    }
+
+    return false;
+  }
+
+  private ObjectSettings(options: ClaimsAuthorizeRequest): boolean {
+    switch (options.action) {
+      case Action.READ:
+        return options.user.id == options.objectId;
+      case Action.UPDATE:
+        return options.user.id == options.objectId;
     }
 
     return false;
