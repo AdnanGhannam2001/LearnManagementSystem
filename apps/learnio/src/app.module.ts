@@ -9,8 +9,8 @@ import { AppController } from './app.controller';
 @Module({
     imports: [
         DatabaseModule,
-        UsersModule,
         AuthModule,
+        UsersModule,
         RmqModule.register(MAIL_SERVICE)
     ],
     controllers: [AppController]

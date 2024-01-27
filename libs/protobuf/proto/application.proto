@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package learnio.application;
+
+import "_shared.proto";
+
+service ApplicationService {
+    rpc GetAll(GetAllRequest) returns(GetAllResponse);
+    rpc GetById(GetByIdRequest) returns(GetByIdResponse);
+    rpc Send(SendRequest) returns(EmptyOrError);
+    rpc Respond(RespondRequest) returns(EmptyOrError);
+}
+
+message Application {
+  optional User user = 1;
+  optional string user_id = 2;
+  string details = 3;
+  string status = 4;
+  string response = 5;
+}
+
+message GetAllResponse {
+    repeated Application applications = 1;
+    Paginator paginator = 2;
+}
+
+message GetByIdResponse {
+    oneof data {
+        Application application = 1;
+        Error error = 2;
+    }
+}
+
+message SendRequest {
+  string userId = 1;
+  string details = 2;
+}
+
+message RespondRequest {
+    string id = 1;
+    string status = 2;
+    string response = 3;
+}
