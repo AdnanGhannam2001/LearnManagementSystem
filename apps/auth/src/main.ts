@@ -4,6 +4,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { LEARNIO_AUTH_PACKAGE_NAME } from '@protobuf/auth';
 import { join } from 'path';
 import { LEARNIO_USER_PACKAGE_NAME } from '@protobuf/user';
+import { LEARNIO_APPLICATION_PACKAGE_NAME } from '@protobuf/application';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -12,11 +13,13 @@ async function bootstrap() {
       options: {
         package: [
           LEARNIO_AUTH_PACKAGE_NAME,
-          LEARNIO_USER_PACKAGE_NAME
+          LEARNIO_USER_PACKAGE_NAME,
+          LEARNIO_APPLICATION_PACKAGE_NAME
         ],
         protoPath: [
           join(__dirname, "../../../libs/protobuf/proto/auth.proto"),
-          join(__dirname, "../../../libs/protobuf/proto/user.proto")
+          join(__dirname, "../../../libs/protobuf/proto/user.proto"),
+          join(__dirname, "../../../libs/protobuf/proto/application.proto")
         ]
       }
     });

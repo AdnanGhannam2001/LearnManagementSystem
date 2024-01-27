@@ -8,6 +8,7 @@ import { LocalStrategy } from "./strategy/local.strategy";
 import { LEARNIO_USER_PACKAGE_NAME } from "@protobuf/user";
 import { AUTH_SERVICE } from "../../constants";
 import { UsersApiController } from "./users-api.controller";
+import { LEARNIO_APPLICATION_PACKAGE_NAME } from "@protobuf/application";
 
 @Module({
     imports: [
@@ -18,11 +19,13 @@ import { UsersApiController } from "./users-api.controller";
                 options: {
                     package: [
                         LEARNIO_AUTH_PACKAGE_NAME,
-                        LEARNIO_USER_PACKAGE_NAME
+                        LEARNIO_USER_PACKAGE_NAME,
+                        LEARNIO_APPLICATION_PACKAGE_NAME
                     ],
                     protoPath: [
                         join(__dirname, "../../../libs/protobuf/proto/auth.proto"),
-                        join(__dirname, "../../../libs/protobuf/proto/user.proto")
+                        join(__dirname, "../../../libs/protobuf/proto/user.proto"),
+                        join(__dirname, "../../../libs/protobuf/proto/application.proto")
                     ]
                 }
             }
