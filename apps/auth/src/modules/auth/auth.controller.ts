@@ -1,7 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthServiceController, AuthServiceControllerMethods, AuthenticateRequest, ChangePasswordRequest, ClaimsAuthorizeRequest, LoginRequest, RegisterRequest, RoleAuthorizeRequest, VerifyEmailRequest } from '@protobuf/auth';
-import { EmptyOrError } from '@protobuf/_shared';
 
 @Controller()
 @AuthServiceControllerMethods()

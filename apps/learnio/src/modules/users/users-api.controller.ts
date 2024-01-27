@@ -10,6 +10,9 @@ import { Action, ObjectType } from "@protobuf/auth";
 import { UpdateUserRequestDto } from "./dto/update-user.request";
 import { User } from "./decorator/user.decorator";
 import { UpdateSettingsRequestDto } from "./dto/update-settings.request";
+import { ApplyRequestDto } from "./dto/apply.request";
+import { RespondRequestDto } from "./dto/respond.request";
+import { RoleAuthorize } from "../auth/decorator/role-authorize.decorator";
 
 @Controller('api/users')
 export class UsersApiController {
@@ -45,6 +48,39 @@ export class UsersApiController {
     @Post('logout')
     logout(@Res() res: Response) {
         res.clearCookie('jwt').end();
+    }
+
+    @Post('send')
+    @Authenticate()
+    apply(@User() user, @Body() dto: ApplyRequestDto) {
+        return this.service.apply(user.id, dto);
+    }
+
+    @Post('respond')
+    @RoleAuthorize('Moderator', 'Admin')
+    @Authenticate()
+    respond(@User() user, @Body() dto: RespondRequestDto) {
+        return this.service.respond(user.id, dto);
+    }
+
+    @Get('applications')
+    @Authenticate()
+    async getAllApplications(@Query('search') search = '',
+        @Query('skip', new ParseIntPipe({ optional: true })) skip = 0,
+        @Query('pageSize', new ParseIntPipe({ optional: true })) pageSize = 20,
+        @Query('desc', new ParseBoolPipe({ optional: true })) desc = false)
+    {
+        return this.service.getAllApplications({ search, skip, pageSize, desc });
+    }
+
+    @Get('applications/:id')
+    @ClaimsAuthorize({
+        objectType: ObjectType.APPLY_REQUEST,
+        action: Action.READ
+    })
+    @Authenticate()
+    getApplicationById(@Param('id') id) {
+        return this.service.getApplicationById({ id });
     }
 
     @Get()

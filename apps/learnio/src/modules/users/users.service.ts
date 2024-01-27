@@ -1,26 +1,47 @@
 import { HttpException, Inject, Injectable, OnModuleInit } from "@nestjs/common";
-import { ClientGrpc, ClientProxy } from "@nestjs/microservices";
-import { AUTH_SERVICE_NAME, AuthServiceClient } from "@protobuf/auth";
+import { Client, ClientGrpc, ClientProxy, Transport } from "@nestjs/microservices";
+import { AUTH_SERVICE_NAME, AuthServiceClient, LEARNIO_AUTH_PACKAGE_NAME } from "@protobuf/auth";
 import { RegisterRequestDto } from "./dto/register.request";
 import { firstValueFrom } from "rxjs";
 import { VerifyEmailRequestDto } from "./dto/verify-email.request";
 import { AUTH_SERVICE, MAIL_SERVICE } from "../../constants";
 import { Mail } from "@common";
-import { USER_SERVICE_NAME, UpdateRequest, UserServiceClient } from "@protobuf/user";
+import { LEARNIO_USER_PACKAGE_NAME, USER_SERVICE_NAME, UpdateRequest, UserServiceClient } from "@protobuf/user";
 import { GetAllRequest, GetByIdRequest } from "@protobuf/_shared";
 import { UpdateSettingsRequestDto } from "./dto/update-settings.request";
+import { APPLICATION_SERVICE_NAME, ApplicationServiceClient, LEARNIO_APPLICATION_PACKAGE_NAME } from "@protobuf/application";
+import { ApplyRequestDto } from "./dto/apply.request";
+import { RespondRequestDto } from "./dto/respond.request";
+import { join } from "path";
 
 @Injectable()
 export class UsersService implements OnModuleInit {
+    @Client({
+        transport: Transport.GRPC,
+        options: {
+            package: [
+                LEARNIO_AUTH_PACKAGE_NAME,
+                LEARNIO_USER_PACKAGE_NAME,
+                LEARNIO_APPLICATION_PACKAGE_NAME
+            ],
+            protoPath: [
+                join(__dirname, "../../../libs/protobuf/proto/auth.proto"),
+                join(__dirname, "../../../libs/protobuf/proto/user.proto"),
+                join(__dirname, "../../../libs/protobuf/proto/application.proto")
+            ]
+        }
+    })
+    private authClient: ClientGrpc;
     private authService: AuthServiceClient;
     private userService: UserServiceClient;
+    private applicationService: ApplicationServiceClient;
     
-    constructor(@Inject(AUTH_SERVICE) private authClient: ClientGrpc,
-                @Inject(MAIL_SERVICE) private mailService: ClientProxy) {}
+    constructor(@Inject(MAIL_SERVICE) private readonly mailService: ClientProxy) { }
 
     onModuleInit() {
         this.authService = this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
         this.userService = this.authClient.getService<UserServiceClient>(USER_SERVICE_NAME);
+        this.applicationService = this.authClient.getService<ApplicationServiceClient>(APPLICATION_SERVICE_NAME);
     }
 
     async register(dto: RegisterRequestDto) {
@@ -101,5 +122,35 @@ export class UsersService implements OnModuleInit {
         }
 
         return response.settings;
+    }
+
+    getAllApplications(options: GetAllRequest) {
+        return this.applicationService.getAll(options);
+    }
+
+    async getApplicationById(options: GetByIdRequest) {
+        const response = await firstValueFrom(this.applicationService.getById(options));
+
+        if (response.error) {
+            throw new HttpException(response.error, response.error.code);
+        }
+
+        return response.application;
+    }
+
+    async apply(id: string, dto: ApplyRequestDto) {
+        const response = await firstValueFrom(this.applicationService.send({ userId: id, details: dto.details }));
+
+        if (response.error) {
+            throw new HttpException(response.error, response.error.code);
+        }
+    }
+
+    async respond(id: string, dto: RespondRequestDto) {
+        const response = await firstValueFrom(this.applicationService.respond({ id, response: dto.response, status: dto.status }));
+
+        if (response.error) {
+            throw new HttpException(response.error, response.error.code);
+        }
     }
 }
