@@ -4,12 +4,13 @@ import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { AUTH_SERVICE_NAME, AuthServiceClient } from '@protobuf/auth';
 import { firstValueFrom, of } from 'rxjs';
+import { AUTH_SERVICE } from '@common';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     private authService: AuthServiceClient;
     
-    constructor(@Inject(AUTH_SERVICE_NAME) private authClient: ClientGrpc) {
+    constructor(@Inject(AUTH_SERVICE) private readonly authClient: ClientGrpc) {
         super();
     }
 

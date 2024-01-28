@@ -3,7 +3,7 @@ import { Reflector } from "@nestjs/core";
 import { ClientGrpc } from "@nestjs/microservices";
 import { User } from "@prisma/client";
 import { AUTH_SERVICE_NAME, AuthServiceClient, ClaimsAuthorizeRequest } from "@protobuf/auth";
-import { AUTH_SERVICE } from "apps/learnio/src/constants";
+import { AUTH_SERVICE } from "@common/constants";
 import { Request } from "express";
 import { firstValueFrom } from "rxjs";
 import { SET_OPERATION } from "../decorator/set-operation.decorator";
@@ -32,8 +32,6 @@ export class ClaimsAuthorizeGuard implements CanActivate, OnModuleInit {
             objectId: req.params.id,
             objectType: options.objectType
         }));
-
-        console.log({ response })
 
         if (response.error) {
             throw new HttpException(response.error, response.error.code);

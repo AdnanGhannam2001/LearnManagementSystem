@@ -1,2 +1,1 @@
-export const AUTH_SERVICE = "AuthService"
-export const MAIL_SERVICE = "MailService";
+export const USER_AUTH_SERVICE = 'UserAuthService';

@@ -4,7 +4,7 @@ import { AUTH_SERVICE_NAME, AuthServiceClient, LEARNIO_AUTH_PACKAGE_NAME } from 
 import { RegisterRequestDto } from "./dto/register.request";
 import { firstValueFrom } from "rxjs";
 import { VerifyEmailRequestDto } from "./dto/verify-email.request";
-import { AUTH_SERVICE, MAIL_SERVICE } from "../../constants";
+import { MAIL_SERVICE } from "../../../../../libs/common/src/constants";
 import { Mail } from "@common";
 import { LEARNIO_USER_PACKAGE_NAME, USER_SERVICE_NAME, UpdateRequest, UserServiceClient } from "@protobuf/user";
 import { GetAllRequest, GetByIdRequest } from "@protobuf/_shared";
@@ -13,30 +13,16 @@ import { APPLICATION_SERVICE_NAME, ApplicationServiceClient, LEARNIO_APPLICATION
 import { ApplyRequestDto } from "./dto/apply.request";
 import { RespondRequestDto } from "./dto/respond.request";
 import { join } from "path";
+import { USER_AUTH_SERVICE } from "../../constants";
 
 @Injectable()
 export class UsersService implements OnModuleInit {
-    @Client({
-        transport: Transport.GRPC,
-        options: {
-            package: [
-                LEARNIO_AUTH_PACKAGE_NAME,
-                LEARNIO_USER_PACKAGE_NAME,
-                LEARNIO_APPLICATION_PACKAGE_NAME
-            ],
-            protoPath: [
-                join(__dirname, "../../../libs/protobuf/proto/auth.proto"),
-                join(__dirname, "../../../libs/protobuf/proto/user.proto"),
-                join(__dirname, "../../../libs/protobuf/proto/application.proto")
-            ]
-        }
-    })
-    private authClient: ClientGrpc;
     private authService: AuthServiceClient;
     private userService: UserServiceClient;
     private applicationService: ApplicationServiceClient;
     
-    constructor(@Inject(MAIL_SERVICE) private readonly mailService: ClientProxy) { }
+    constructor(@Inject(USER_AUTH_SERVICE) private authClient: ClientGrpc,
+        @Inject(MAIL_SERVICE) private readonly mailService: ClientProxy) { }
 
     onModuleInit() {
         this.authService = this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
