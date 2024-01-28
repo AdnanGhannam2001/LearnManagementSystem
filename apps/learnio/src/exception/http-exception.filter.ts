@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 
 @Catch(HttpException)
@@ -10,8 +10,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const error = exception.getResponse();
 
-    res
+    if ([HttpStatus.FORBIDDEN, HttpStatus.UNAUTHORIZED].includes(status)) {
+      return res.status(status).redirect('/forbidden');
+    }
+
+    return res
       .status(status)
-      .render('partials/error', { error })
+      .render('partials/error', { error });
   }
 }

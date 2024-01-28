@@ -3,9 +3,7 @@ extends ../layouts/sign
 block sign-content 
     form(hx-post='/api/users/login'
         hx-target="#root"
-        hx-target-4*='#errors'
-        hx-swap="outerHTML"
-        hx-push-url="true")
+        hx-target-4*='#errors')
         div
             label(for='email') Email
             input(name='username' type='email' id='email')

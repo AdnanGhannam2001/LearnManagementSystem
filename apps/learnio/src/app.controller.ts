@@ -12,4 +12,8 @@ export class AppController {
         const result = await this.authService.authenticate(req.cookies['jwt']);
         return { islogged: result.error == undefined };
     }
+
+    @Get('forbidden')
+    @Render('pages/forbidden')
+    forbidden() { }
 }

@@ -5,9 +5,7 @@ block content
 
     if islogged
         button(hx-post='/api/users/logout'
-            hx-target='#root'
-            hx-swap="outerHTML"
-            hx-push-url="true") Logout
+            hx-target='#root') Logout
     else
         a(href="/users/login") Login
         |
