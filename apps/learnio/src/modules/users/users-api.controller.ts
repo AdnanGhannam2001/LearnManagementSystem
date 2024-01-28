@@ -50,17 +50,21 @@ export class UsersApiController {
         res.clearCookie('jwt').end();
     }
 
-    @Post('send')
+    @Post('applications/send')
+    @ClaimsAuthorize({
+        objectType: ObjectType.APPLY_REQUEST,
+        action: Action.CREATE
+    })
     @Authenticate()
     apply(@User() user, @Body() dto: ApplyRequestDto) {
         return this.service.apply(user.id, dto);
     }
 
-    @Post('respond')
+    @Post('applications/:id/respond')
     @RoleAuthorize('Moderator', 'Admin')
     @Authenticate()
-    respond(@User() user, @Body() dto: RespondRequestDto) {
-        return this.service.respond(user.id, dto);
+    respond(@Param('id') id, @Body() dto: RespondRequestDto) {
+        return this.service.respond(id, dto);
     }
 
     @Get('applications')

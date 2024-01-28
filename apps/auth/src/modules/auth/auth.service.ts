@@ -282,4 +282,17 @@ export class AuthService {
 
     return false;
   }
+
+  private ObjectApplication(options: ClaimsAuthorizeRequest): boolean {
+    switch(options.action) {
+      case Action.CREATE:
+        return options.user.permission == 'NormalUser';
+      case Action.READ:
+        return options.user.id == options.objectId
+          || this.hasHigherPermission(options.user.permission, Permissions.Coach);
+      case Action.UPDATE:
+        return this.hasHigherPermission(options.user.permission, Permissions.Coach);
+    }
+    return false;
+  }
 }
