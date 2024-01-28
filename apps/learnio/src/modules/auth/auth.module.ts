@@ -4,6 +4,7 @@ import { join } from "path";
 import { RoleAuthorizeGuard } from "./guard/role-authorize.guard";
 import { ClaimsAuthorizeGuard } from "./guard/claims-authorize.guard";
 import { AuthClientModule } from "@common";
+import { AuthService } from "./auth.service";
 
 @Global()
 @Module({
@@ -14,11 +15,13 @@ import { AuthClientModule } from "@common";
         }),
     ],
     providers: [
+        AuthService,
         AuthenticateGuard,
         RoleAuthorizeGuard,
         ClaimsAuthorizeGuard
     ],
     exports: [
+        AuthService,
         AuthenticateGuard,
         RoleAuthorizeGuard,
         ClaimsAuthorizeGuard

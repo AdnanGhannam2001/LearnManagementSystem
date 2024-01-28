@@ -1,7 +1,11 @@
 extends ../layouts/sign
 
 block sign-content 
-    form(hx-post='/api/users/login' hx-target="this" hx-target-4*='#errors' hx-swap="outerHTML")
+    form(hx-post='/api/users/login'
+        hx-target="#root"
+        hx-target-4*='#errors'
+        hx-swap="outerHTML"
+        hx-push-url="true")
         div
             label(for='email') Email
             input(name='username' type='email' id='email')
@@ -9,4 +13,4 @@ block sign-content
             label(for='password') Password
             input(name='password' type='password' id='password')
         p#errors
-        button(type='submit') Login
+        button(type='submit' ) Login

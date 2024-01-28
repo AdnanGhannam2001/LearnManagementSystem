@@ -3,22 +3,16 @@ import { ClientGrpc } from "@nestjs/microservices";
 import { AUTH_SERVICE_NAME, AuthServiceClient } from "@protobuf/auth";
 import { Request } from "express";
 import { firstValueFrom } from "rxjs";
+import { AuthService } from "../auth.service";
 
 @Injectable()
 export class AuthenticateGuard implements CanActivate {
-    private authService: AuthServiceClient;
-    
-    constructor(@Inject(AUTH_SERVICE_NAME) private readonly authClient: ClientGrpc) {}
-
-    onModuleInit() {
-        this.authService = this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
-    }
+    constructor(private readonly authService: AuthService) {}
 
     async canActivate(context: ExecutionContext) {
-        const req = context.switchToHttp().getRequest() as Request;
+        const req = context.switchToHttp().getRequest<Request>();
 
-        const response = await firstValueFrom(
-            this.authService.authenticate({ token: req.cookies['jwt'] }));
+        const response = await this.authService.authenticate(req.cookies['jwt']);
 
         if (response.error) {
             throw new HttpException(response.error, response.error.code);

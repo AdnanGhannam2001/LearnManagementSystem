@@ -32,7 +32,6 @@ export class UsersApiController {
         return this.verifyEmail(dto);
     }
 
-    @HttpCode(HttpStatus.OK)
     @Redirect('/', 301)
     @Post('login')
     @Login()
@@ -44,10 +43,10 @@ export class UsersApiController {
             });
     }
 
-    @HttpCode(204)
+    @Redirect('/', 301)
     @Post('logout')
     logout(@Res() res: Response) {
-        res.clearCookie('jwt').end();
+        res.clearCookie('jwt');
     }
 
     @Post('applications/send')

@@ -3,4 +3,13 @@ extends ../layouts/_layout
 block content
     h1 HOME PAGE
 
-    button(hx-post='/api/users/logout') Logout
+    if islogged
+        button(hx-post='/api/users/logout'
+            hx-target='#root'
+            hx-swap="outerHTML"
+            hx-push-url="true") Logout
+    else
+        a(href="/users/login") Login
+        |
+        |
+        a(href="/users/register") Sign up
