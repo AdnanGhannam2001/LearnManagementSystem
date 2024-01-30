@@ -80,8 +80,8 @@ model Course {
   title String @db.VarChar(100)
   brief String? @db.VarChar(250)
   about String[]
-  video String
-  image String
+  video String?
+  image String?
   requirements String[]
   description String @db.VarChar(1000)
   createdAt DateTime @default(now())

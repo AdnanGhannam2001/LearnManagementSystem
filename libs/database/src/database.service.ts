@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { HttpException, Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { PrismaClientInitializationError, PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 
@@ -19,5 +19,9 @@ export class DatabaseService extends PrismaClient implements OnModuleInit {
         } else {
             return `Something went wrong, please try again later`;
         }
+    }
+
+    throwHttpException(error: Error) {
+        throw new HttpException(this.handle(error), 400);
     }
 }
