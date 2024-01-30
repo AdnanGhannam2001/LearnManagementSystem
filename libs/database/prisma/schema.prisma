@@ -113,14 +113,14 @@ model Course {
 
 model Language {
   id String @id @default(cuid())
-  name String @db.VarChar(50)
+  name String @db.VarChar(50) @unique
 
   courses Course[]
 }
 
 model Category {
   id String @id @default(cuid())
-  label String @db.VarChar(50)
+  label String @db.VarChar(50) @unique
 
   courses Course[]
 }
