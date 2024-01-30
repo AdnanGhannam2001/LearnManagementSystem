@@ -1,18 +1,17 @@
 import { HttpException, Inject, Injectable, OnModuleInit } from "@nestjs/common";
-import { Client, ClientGrpc, ClientProxy, Transport } from "@nestjs/microservices";
-import { AUTH_SERVICE_NAME, AuthServiceClient, LEARNIO_AUTH_PACKAGE_NAME } from "@protobuf/auth";
+import { ClientGrpc, ClientProxy } from "@nestjs/microservices";
+import { AUTH_SERVICE_NAME, AuthServiceClient } from "@protobuf/auth";
 import { RegisterRequestDto } from "./dto/register.request";
 import { firstValueFrom } from "rxjs";
 import { VerifyEmailRequestDto } from "./dto/verify-email.request";
 import { MAIL_SERVICE } from "../../../../../libs/common/src/constants";
 import { Mail } from "@common";
-import { LEARNIO_USER_PACKAGE_NAME, USER_SERVICE_NAME, UpdateRequest, UserServiceClient } from "@protobuf/user";
+import { USER_SERVICE_NAME, UpdateRequest, UserServiceClient } from "@protobuf/user";
 import { GetAllRequest, GetByIdRequest } from "@protobuf/_shared";
 import { UpdateSettingsRequestDto } from "./dto/update-settings.request";
-import { APPLICATION_SERVICE_NAME, ApplicationServiceClient, LEARNIO_APPLICATION_PACKAGE_NAME } from "@protobuf/application";
+import { APPLICATION_SERVICE_NAME, ApplicationServiceClient } from "@protobuf/application";
 import { ApplyRequestDto } from "./dto/apply.request";
 import { RespondRequestDto } from "./dto/respond.request";
-import { join } from "path";
 import { USER_AUTH_SERVICE } from "../../constants";
 
 @Injectable()

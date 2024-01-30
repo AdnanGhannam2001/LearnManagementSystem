@@ -5,12 +5,14 @@ import { AuthModule } from './modules/auth/auth.module';
 import { RmqModule } from '@rmq';
 import { MAIL_SERVICE } from '../../../libs/common/src/constants';
 import { AppController } from './app.controller';
+import { CoursesModule } from './modules/courses/courses.module';
 
 @Module({
     imports: [
         DatabaseModule,
         AuthModule,
         UsersModule,
+        CoursesModule,
         RmqModule.register(MAIL_SERVICE)
     ],
     controllers: [AppController]
