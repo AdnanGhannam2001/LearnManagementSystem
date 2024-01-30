@@ -160,6 +160,7 @@ export class AuthService {
         response.allowed = this.ObjectSettings(request);
         break;
       case ObjectType.APPLY_REQUEST:
+        response.allowed = this.ObjectApplication(request);
         break;
       case ObjectType.COURSE:
         break;

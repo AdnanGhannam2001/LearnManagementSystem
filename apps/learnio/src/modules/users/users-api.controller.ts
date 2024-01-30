@@ -29,7 +29,7 @@ export class UsersApiController {
     @Redirect('/users/login')
     @Post('verify-email')
     verifyEmail(@Body() dto: VerifyEmailRequestDto) {
-        return this.verifyEmail(dto);
+        return this.service.verifyEmail(dto);
     }
 
     @Redirect('/', 301)
@@ -47,6 +47,17 @@ export class UsersApiController {
     @Post('logout')
     logout(@Res() res: Response) {
         res.clearCookie('jwt');
+    }
+
+    @Get('me/application')
+    @Render('partials/application')
+    @ClaimsAuthorize({
+        objectType: ObjectType.APPLY_REQUEST,
+        action: Action.READ
+    })
+    @Authenticate()
+    getMyApplication(@User() user) {
+        return this.service.getApplicationById({ id: user.id });
     }
 
     @Post('applications/send')
@@ -97,6 +108,17 @@ export class UsersApiController {
         return this.service.getAll({ search, skip, pageSize, desc });
     }
 
+    @Get('me')
+    @Render('partials/user')
+    @ClaimsAuthorize({
+        objectType: ObjectType.USER,
+        action: Action.READ
+    })
+    @Authenticate()
+    getMyProfile(@User() user) {
+        return this.service.getById({ id: user.id });
+    }
+
     @Get(':id')
     @ClaimsAuthorize({
         objectType: ObjectType.USER,
@@ -128,6 +150,7 @@ export class UsersApiController {
     }
 
     @Get('me/settings')
+    @Render('partials/settings')
     @ClaimsAuthorize({
         objectType: ObjectType.SETTINGS,
         action: Action.READ

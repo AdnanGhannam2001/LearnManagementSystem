@@ -1,0 +1,10 @@
+div
+    input(type="checkbox" checked=notifications name='notifications')
+    strong Receive Notifications
+div
+    input(type="checkbox" checked=emails name='emails')
+    strong Receive Emails
+
+//- TODO: Display response
+button(hx-patch='/api/users/me/settings'
+    hx-include='[name=emails], [name=notifications]') Save Changes

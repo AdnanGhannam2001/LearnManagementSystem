@@ -1,0 +1,9 @@
+extends ../layouts/_layout
+
+block content
+    nav 
+        button(hx-get='/api/users/me' hx-target='#main' hx-trigger='load, click') Profile
+        button(hx-get='/api/users/me/settings' hx-target='#main') Settings
+        button(hx-get='/api/users/me/application' hx-target-*='#main') Apply
+
+    main#main

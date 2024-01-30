@@ -1,0 +1,17 @@
+//- div(hx-get='/api/users/me/application'
+//-     hx-trigger='load')
+
+//- TODO
+if details
+    textarea(name="details", cols="30", rows="10") 
+    button(hx-post='/api/users/applications/send' hx-include='[name=details]') Submit
+else
+    h4 Your request:
+    p= details
+
+    h4 Response:
+    if response
+        h5= status 
+        p= response
+    else 
+        h5 No response yet!

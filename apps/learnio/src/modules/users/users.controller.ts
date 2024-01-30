@@ -19,4 +19,9 @@ export class UsersController {
     @Render('pages/users')
     @Authenticate()
     getUsers() { }
+
+    @Get('profile')
+    @Render('pages/profile')
+    @Authenticate()
+    getProfile() { }
 }

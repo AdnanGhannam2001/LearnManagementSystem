@@ -4,7 +4,7 @@ import { ClientGrpc } from "@nestjs/microservices";
 import { User } from "@prisma/client";
 import { AUTH_SERVICE_NAME, AuthServiceClient, ClaimsAuthorizeRequest } from "@protobuf/auth";
 import { AUTH_SERVICE } from "@common/constants";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { firstValueFrom } from "rxjs";
 import { SET_OPERATION } from "../decorator/set-operation.decorator";
 
@@ -29,7 +29,7 @@ export class ClaimsAuthorizeGuard implements CanActivate, OnModuleInit {
         const response = await  firstValueFrom(this.authService.claimsAuthorize({
             user: req.user as User,
             action: options.action,
-            objectId: req.params.id,
+            objectId: req.params.id ?? (<User>req.user).id,
             objectType: options.objectType
         }));
 
