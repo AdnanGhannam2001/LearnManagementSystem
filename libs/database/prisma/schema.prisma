@@ -90,6 +90,8 @@ model Course {
   creator User @relation(fields: [creatorId], references: [id])
   creatorId String
 
+  units Unit[]
+
   forum Forum?
 
   students Rolled[]
@@ -133,6 +135,13 @@ model Unit {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+
+  lessons Lesson[]
+
+  @@unique([courseId, order], name: "unitOrder")
 }
 
 model Lesson {
@@ -147,6 +156,9 @@ model Lesson {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  unit Unit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId String
+
   questions QuizQuestion[] // If type === Quiz
 
   comments Comment[]
@@ -154,6 +166,8 @@ model Lesson {
   done Done[]
 
   resources Resource[]
+
+  @@unique([unitId, order], name: "lessonOrder")
 }
 
 model Coach {
