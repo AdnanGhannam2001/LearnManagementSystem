@@ -52,8 +52,12 @@ export class UnitsController {
         return this.service.findOneOrThrow({ where: { id } });
     }
 
+    // TODO: fix this (objectId?)
     @Post()
-    @RoleAuthorize('Coach')
+    @ClaimsAuthorize({
+        objectType: ObjectType.UNIT,
+        action: Action.CREATE
+    })
     @Authenticate()
     create(@User() user, @Body() dto: CreateUnitRequestDto) {
         return this.service.create({
