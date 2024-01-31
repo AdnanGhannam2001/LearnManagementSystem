@@ -59,6 +59,7 @@ export class CoursesController {
             data: {
                 ...dto,
                 creator: { connect: { id: user.id } },
+                coaches: { create: { userId: user.id } },
                 categories: {
                     connectOrCreate: dto.categories.map(cate => ({
                         where: { label: cate },
