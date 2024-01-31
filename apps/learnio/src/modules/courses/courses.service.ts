@@ -13,12 +13,12 @@ export class CoursesService {
             const totalPages = Math.ceil(count / args.take);
 
             return {
-                users: await this.db.course.findMany(args),
+                courses: await this.db.course.findMany(args),
                 paginator: { count, currentPage, totalPages }
             }
         }
 
-        return { users: await this.db.course.findMany(args), paginator: undefined };
+        return { courses: await this.db.course.findMany(args), paginator: undefined };
     }
 
     findOne(args: Prisma.CourseFindUniqueArgs) {

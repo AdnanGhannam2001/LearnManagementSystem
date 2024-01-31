@@ -6,6 +6,7 @@ import { RmqModule } from '@rmq';
 import { MAIL_SERVICE } from '../../../libs/common/src/constants';
 import { AppController } from './app.controller';
 import { CoursesModule } from './modules/courses/courses.module';
+import { UnitsModule } from './modules/units/units.module';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { CoursesModule } from './modules/courses/courses.module';
         AuthModule,
         UsersModule,
         CoursesModule,
+        UnitsModule,
         RmqModule.register(MAIL_SERVICE)
     ],
     controllers: [AppController]
