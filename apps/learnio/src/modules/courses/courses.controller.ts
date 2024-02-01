@@ -185,7 +185,6 @@ export class CoursesController {
         });
     }
 
-    // TODO
     @Post(':id/coaches')
     @ClaimsAuthorize({
         objectType: ObjectType.COURSE,
