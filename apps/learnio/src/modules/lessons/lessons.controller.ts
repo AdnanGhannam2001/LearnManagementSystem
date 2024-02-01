@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
-import { LessonsService } from "./lesssons.service";
+import { LessonsService } from "./lessons.service";
 import { ObjectType } from "@protobuf/auth";
 import { Action } from "@protobuf/auth";
 import { Authenticate } from "../auth/decorator/authenticate.decorator";

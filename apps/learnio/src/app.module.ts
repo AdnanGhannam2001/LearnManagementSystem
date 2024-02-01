@@ -7,7 +7,7 @@ import { MAIL_SERVICE } from '../../../libs/common/src/constants';
 import { AppController } from './app.controller';
 import { CoursesModule } from './modules/courses/courses.module';
 import { UnitsModule } from './modules/units/units.module';
-import { LessonsModule } from './modules/lesssons/lesssons.module';
+import { LessonsModule } from './modules/lessons/lessons.module';
 import { CoachesModule } from './modules/coaches/coaches.module';
 import { CartsModule } from './modules/carts/carts.module';
 
