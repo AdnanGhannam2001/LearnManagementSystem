@@ -363,6 +363,8 @@ model Done {
 }
 
 model Rate {
+  value Decimal @db.Decimal(2, 1)
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
