@@ -10,6 +10,7 @@ import { UnitsModule } from './modules/units/units.module';
 import { LessonsModule } from './modules/lessons/lessons.module';
 import { CoachesModule } from './modules/coaches/coaches.module';
 import { CartsModule } from './modules/carts/carts.module';
+import { RatesModule } from './modules/rates/rates.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { CartsModule } from './modules/carts/carts.module';
         LessonsModule,
         CoachesModule,
         CartsModule,
+        RatesModule,
         RmqModule.register(MAIL_SERVICE)
     ],
     controllers: [AppController]
