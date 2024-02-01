@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { CoursesModule } from './modules/courses/courses.module';
 import { UnitsModule } from './modules/units/units.module';
 import { LessonsModule } from './modules/lesssons/lesssons.module';
+import { CoachesModule } from './modules/coaches/coaches.module';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { LessonsModule } from './modules/lesssons/lesssons.module';
         CoursesModule,
         UnitsModule,
         LessonsModule,
+        CoachesModule,
         RmqModule.register(MAIL_SERVICE)
     ],
     controllers: [AppController]

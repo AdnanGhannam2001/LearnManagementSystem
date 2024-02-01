@@ -66,4 +66,19 @@ export class CoursesService {
             this.db.throwHttpException(error);
         }
     }
+
+    async findAllRolled(args: Prisma.RolledFindManyArgs) {
+        if (args.take) {
+            const count = await this.db.course.count({ where: args.where });
+            const currentPage = ((args.skip ?? 0) / args.take) + 1;
+            const totalPages = Math.ceil(count / args.take);
+
+            return {
+                rolled: await this.db.rolled.findMany(args),
+                paginator: { count, currentPage, totalPages }
+            }
+        }
+
+        return { rolled: await this.db.rolled.findMany(args), paginator: undefined };
+    }
 }
