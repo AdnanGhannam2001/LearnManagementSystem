@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package learnio.forum;
+
+import "_shared.proto";
+
+service ForumService {
+    rpc GetAllQuestions(GetAllRequest) returns(GetAllResponse);
+    rpc GetQuestionById(GetByIdRequest) returns(GetByIdResponse);
+    rpc AskQuestion(AskQuestionRequest) returns(GetByIdResponse);
+    rpc UpdateQuestion(UpdateQuestionRequest) returns(GetByIdResponse);
+    rpc DeleteQuestion(GetByIdRequest) returns(EmptyOrError);
+}
+
+message Question {
+    string id = 1;
+    string title = 2;
+    string content = 3;
+    User user = 4;
+    string forumId = 5;
+}
+
+message GetAllResponse {
+    repeated Question questions = 1;
+    Paginator paginator = 2;
+}
+
+message GetByIdResponse {
+    oneof data {
+        Question question = 1;
+        Error error = 2;
+    }
+}
+
+message AskQuestionRequest {
+    string title = 1;
+    string content = 2;
+    string user_id = 3;
+    string forumId = 4;
+}
+
+message UpdateQuestionRequest {
+    string id = 1;
+    optional string title = 2;
+    optional string content = 3;
+}
