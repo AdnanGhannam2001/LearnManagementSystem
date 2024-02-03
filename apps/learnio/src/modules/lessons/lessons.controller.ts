@@ -8,7 +8,7 @@ import { User } from "../users/decorator/user.decorator";
 import { CreateLessonRequestDto } from "./dto/create-lesson.request";
 import { UpdateLessonRequestDto } from "./dto/update-lesson.request";
 
-@Controller('lesssons')
+@Controller('lessons')
 export class LessonsController {
     constructor(private readonly service: LessonsService) { }
 
@@ -19,19 +19,21 @@ export class LessonsController {
     })
     @Authenticate()
     findOne(@Param('id') id) {
-        return this.service.findOneOrThrow({ where: { id } });
+        return this.service.findOneOrThrow({
+            where: { id },
+            include: { questions: true }
+        });
     }
 
-    // TODO: fix this (objectId?)
-    @Post()
+    @Post(':id')
     @ClaimsAuthorize({
-        objectType: ObjectType.LESSON,
-        action: Action.CREATE
+        objectType: ObjectType.UNIT,
+        action: Action.UPDATE
     })
     @Authenticate()
-    create(@User() user, @Body() dto: CreateLessonRequestDto) {
+    create(@Param('id') unitId, @User() user, @Body() dto: CreateLessonRequestDto) {
         return this.service.create({
-            data: { ...dto }
+            data: { ...dto, unitId }
         });
     }
 
