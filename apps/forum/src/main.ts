@@ -9,8 +9,9 @@ async function bootstrap() {
     ForumModule, {
       transport: Transport.GRPC,
       options: {
+        url: '0.0.0.0:5001',
         package: LEARNIO_FORUM_PACKAGE_NAME,
-        protoPath: join(__dirname, "../../../libs/protobuf/proto/application.proto")
+        protoPath: join(__dirname, "../../../libs/protobuf/proto/forum.proto")
       }
     });
 
