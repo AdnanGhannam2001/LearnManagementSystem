@@ -315,10 +315,10 @@ model Cart {
 }
 
 model Rolled {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  course Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   rolledAt DateTime @default(now())
