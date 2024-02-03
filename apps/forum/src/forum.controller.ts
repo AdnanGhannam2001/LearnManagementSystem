@@ -1,16 +1,17 @@
 import { Controller } from '@nestjs/common';
 import { ForumService } from './forum.service';
-import { AskQuestionRequest, ForumServiceController, ForumServiceControllerMethods, GetByIdResponse, UpdateQuestionRequest } from '@protobuf/forum';
-import { GetAllRequest, GetByIdRequest, EmptyOrError } from '@protobuf/_shared';
+import { AskQuestionRequest, ForumServiceController, ForumServiceControllerMethods, GetAllQuestionsRequest, GetByIdResponse, UpdateQuestionRequest } from '@protobuf/forum';
+import { GetByIdRequest, EmptyOrError } from '@protobuf/_shared';
 
 @Controller()
 @ForumServiceControllerMethods()
 export class ForumController implements ForumServiceController {
   constructor(private readonly service: ForumService) {}
   
-  getAllQuestions(request: GetAllRequest) {
+  getAllQuestions(request: GetAllQuestionsRequest) {
     return this.service.findAll({
       where: {
+        forumId: request.forumId,
         OR: [
           {
             title: {

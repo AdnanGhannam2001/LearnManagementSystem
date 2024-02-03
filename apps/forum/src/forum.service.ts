@@ -1,9 +1,6 @@
 import { DatabaseService } from '@database';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { GetByIdRequest, EmptyOrError } from '@protobuf/_shared';
-import { GetByIdResponse } from '@protobuf/application';
-import { AskQuestionRequest, UpdateQuestionRequest } from '@protobuf/forum';
 
 @Injectable()
 export class ForumService {

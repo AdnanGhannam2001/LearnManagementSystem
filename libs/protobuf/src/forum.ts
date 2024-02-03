@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { EmptyOrError, Error, GetAllRequest, GetByIdRequest, Paginator, User } from "./_shared";
+import { EmptyOrError, Error, GetByIdRequest, Paginator, User } from "./_shared";
 
 export const protobufPackage = "learnio.forum";
 
@@ -10,6 +10,14 @@ export interface Question {
   title: string;
   content: string;
   user: User | undefined;
+  forumId: string;
+}
+
+export interface GetAllQuestionsRequest {
+  search?: string | undefined;
+  skip?: number | undefined;
+  pageSize?: number | undefined;
+  desc?: boolean | undefined;
   forumId: string;
 }
 
@@ -39,7 +47,7 @@ export interface UpdateQuestionRequest {
 export const LEARNIO_FORUM_PACKAGE_NAME = "learnio.forum";
 
 export interface ForumServiceClient {
-  getAllQuestions(request: GetAllRequest): Observable<GetAllResponse>;
+  getAllQuestions(request: GetAllQuestionsRequest): Observable<GetAllResponse>;
 
   getQuestionById(request: GetByIdRequest): Observable<GetByIdResponse>;
 
@@ -51,7 +59,9 @@ export interface ForumServiceClient {
 }
 
 export interface ForumServiceController {
-  getAllQuestions(request: GetAllRequest): Promise<GetAllResponse> | Observable<GetAllResponse> | GetAllResponse;
+  getAllQuestions(
+    request: GetAllQuestionsRequest,
+  ): Promise<GetAllResponse> | Observable<GetAllResponse> | GetAllResponse;
 
   getQuestionById(request: GetByIdRequest): Promise<GetByIdResponse> | Observable<GetByIdResponse> | GetByIdResponse;
 
