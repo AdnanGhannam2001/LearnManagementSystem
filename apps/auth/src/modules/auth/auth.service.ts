@@ -5,6 +5,8 @@ import { UsersService } from '../users/users.service';
 import { createHash } from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { Permissions } from '@prisma/client';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 @Injectable()
 export class AuthService {
@@ -147,70 +149,22 @@ export class AuthService {
     return { allowed: true };
   }
 
-  claimsAuthorize(request: ClaimsAuthorizeRequest): AuthorizeResponse {
-    const response = { error: undefined, allowed: undefined };
+  async claimsAuthorize(request: ClaimsAuthorizeRequest): Promise<AuthorizeResponse> {
+    try {
+      let filename = this.getEnumKey(ObjectType, request.objectType);
+      const action = this.getEnumKey(Action, request.action);
+      filename += `.${action}.sql`;
 
-    switch (request.objectType) {
-      case ObjectType.USER:
-        response.allowed = this.ObjectUser(request);
-        break;
-      case ObjectType.NOTIFICATION:
-        break;
-      case ObjectType.SETTINGS:
-        response.allowed = this.ObjectSettings(request);
-        break;
-      case ObjectType.APPLY_REQUEST:
-        response.allowed = this.ObjectApplication(request);
-        break;
-      case ObjectType.COURSE:
-        break;
-      case ObjectType.UNIT:
-        break;
-      case ObjectType.LESSON:
-        break;
-      case ObjectType.FOLDER:
-        break;
-      case ObjectType.FILE:
-        break;
-      case ObjectType.QUIZ_QUESTION:
-        break;
-      case ObjectType.CHOISE:
-        break;
-      case ObjectType.COMMENT:
-        break;
-      case ObjectType.VOTE:
-        break;
-      case ObjectType.CHAT:
-        break;
-      case ObjectType.MESSAGE:
-        break;
-      case ObjectType.RESOURCE:
-        break;
-      case ObjectType.CART:
-        break;
-      case ObjectType.ROLLED:
-        break;
-      case ObjectType.PAYMENT:
-        break;
-      case ObjectType.MEMBER:
-        break;
-      case ObjectType.DONE:
-        break;
-      case ObjectType.RATE:
-        break;
-      case ObjectType.QUESTION:
-        break;
-      case ObjectType.ANNOUNCEMENT:
-        break;
-      case ObjectType.UNRECOGNIZED:
-        break;
-    }
+      console.log(filename)
+      const file = await this.getSqlFile(filename);
+      const count = await this.db.$executeRawUnsafe(file, request.user.id, request.objectId);
 
-    if (!response.allowed) {
-      response.error = { code: 401, message: `You can't preform this action` };
-    }
+      if (!count) {
+        return { error: { code: 401, message: `You can't preform this action` } };
+      }
+    } catch (error) { }
 
-    return response;
+    return { allowed: true };
   }
 
   private hashPassword(password: string) {
@@ -257,43 +211,12 @@ export class AuthService {
     return permissions.indexOf(permission) > permissions.indexOf(minPermission);
   }
 
-  // Claims Authorization
-  private async ObjectUser(options: ClaimsAuthorizeRequest): Promise<boolean> {
-    switch (options.action) {
-      case Action.READ:
-        return true;
-      case Action.UPDATE:
-      case Action.DELETE:
-        const obj = await this.db.user.findUnique({ where: { id: options.objectId }});
-        return obj && 
-          (options.user.id == options.objectId
-          || this.hasHigherPermission(options.user.permission, obj.permission));
-    }
-
-    return false;
+  private getEnumKey(e: any, value: number) {
+    const keys = Object.keys(e).filter(key => e[key] === value);
+    return keys.length > 0 ? keys[0].toLocaleLowerCase() : null;
   }
 
-  private ObjectSettings(options: ClaimsAuthorizeRequest): boolean {
-    switch (options.action) {
-      case Action.READ:
-        return options.user.id == options.objectId;
-      case Action.UPDATE:
-        return options.user.id == options.objectId;
-    }
-
-    return false;
-  }
-
-  private ObjectApplication(options: ClaimsAuthorizeRequest): boolean {
-    switch(options.action) {
-      case Action.CREATE:
-        return options.user.permission == 'NormalUser';
-      case Action.READ:
-        return options.user.id == options.objectId
-          || this.hasHigherPermission(options.user.permission, Permissions.Coach);
-      case Action.UPDATE:
-        return this.hasHigherPermission(options.user.permission, Permissions.Coach);
-    }
-    return false;
+  private getSqlFile(name: string) {
+    return readFile(join(__dirname, `../../../libs/database/sql/${name}`), 'utf8');
   }
 }
