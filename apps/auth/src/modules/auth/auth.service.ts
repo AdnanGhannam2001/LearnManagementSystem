@@ -151,7 +151,8 @@ export class AuthService {
 
   async claimsAuthorize(request: ClaimsAuthorizeRequest): Promise<AuthorizeResponse> {
     try {
-      let filename = this.getEnumKey(ObjectType, request.objectType);
+      let objectName = this.getEnumKey(ObjectType, request.objectType);
+      let filename = `${objectName}/${objectName}`;
       const action = this.getEnumKey(Action, request.action);
       filename += `.${action}.sql`;
 

@@ -13,6 +13,7 @@ import { CartsModule } from './modules/carts/carts.module';
 import { RatesModule } from './modules/rates/rates.module';
 import { AnnouncementsModule } from './modules/announcements/announcements.module';
 import { ForumsModule } from './modules/forums/forums.modules';
+import { CommentsModule } from './modules/comments/comments.module';
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { ForumsModule } from './modules/forums/forums.modules';
         RatesModule,
         AnnouncementsModule,
         ForumsModule,
+        CommentsModule,
         RmqModule.register(MAIL_SERVICE)
     ],
     controllers: [AppController]
