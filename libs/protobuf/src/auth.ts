@@ -38,6 +38,7 @@ export enum ObjectType {
   RATE = 21,
   QUESTION = 22,
   ANNOUNCEMENT = 23,
+  FORUM = 24,
   UNRECOGNIZED = -1,
 }
 
