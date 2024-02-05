@@ -13,7 +13,7 @@ export class ForumsController {
 
     @Get(':id')
     @ClaimsAuthorize({
-        objectType: ObjectType.COURSE,
+        objectType: ObjectType.FORUM,
         action: Action.READ
     })
     @Authenticate()
@@ -26,7 +26,7 @@ export class ForumsController {
         return this.service.getAll({ forumId, search, skip, pageSize, desc });
     }
 
-    @Get(':id')
+    @Get('questions/:id')
     @ClaimsAuthorize({
         objectType: ObjectType.QUESTION,
         action: Action.READ
@@ -36,20 +36,20 @@ export class ForumsController {
         return this.service.getOne({ id });
     }
 
-    @Post(':id')
+    @Post('questions/:id')
     @ClaimsAuthorize({
-        objectType: ObjectType.COURSE,
+        objectType: ObjectType.QUESTION,
         action: Action.CREATE
     })
     @Authenticate()
-    create(@Param('id') id,
+    create(@Param('id') forumId,
         @User() user,
         @Body() dto: CreateQuestionRequestDto)
     {
-        return this.service.create({ ...dto, userId: user.id, forumId: id });
+        return this.service.create({ ...dto, userId: user.id, forumId });
     }
 
-    @Patch(':id')
+    @Patch('questions/:id')
     @ClaimsAuthorize({
         objectType: ObjectType.QUESTION,
         action: Action.UPDATE
@@ -63,7 +63,7 @@ export class ForumsController {
         });
     }
 
-    @Delete(':id')
+    @Delete('questions/:id')
     @ClaimsAuthorize({
         objectType: ObjectType.QUESTION,
         action: Action.DELETE

@@ -93,8 +93,8 @@ export class CommentsController {
 
     @Post('questions/:id')
     @ClaimsAuthorize({
-        objectType: ObjectType.COMMENT,
-        action: Action.CREATE
+        objectType: ObjectType.QUESTION,
+        action: Action.READ
     })
     @Authenticate()
     createOnQuestion(@Param('id') questionId, @User() user, @Body() dto: CreateCommentRequestDto) {

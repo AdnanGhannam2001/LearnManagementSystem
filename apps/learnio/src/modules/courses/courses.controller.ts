@@ -153,10 +153,6 @@ export class CoursesController {
     }
 
     @Get(':id/rolled')
-    @ClaimsAuthorize({
-        objectType: ObjectType.ROLLED,
-        action: Action.DELETE
-    })
     @Authenticate()
     findAllRolled(@Param('id') id,
         @Query('search') search = '',

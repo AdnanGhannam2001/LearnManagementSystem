@@ -12,10 +12,6 @@ export class AnnouncementsController {
     constructor(private readonly service: AnnouncementsService) { }
 
     @Get(':id')
-    @ClaimsAuthorize({
-        objectType: ObjectType.ANNOUNCEMENT,
-        action: Action.READ
-    })
     @Authenticate()
     findAll(@Param('id') courseId,
         @Query('search') search = '',
